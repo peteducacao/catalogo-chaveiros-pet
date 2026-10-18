@@ -81,6 +81,7 @@
     "estoque": 75,
     "disponivel": true,
     "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa"
+    "legendaImagem": "Imagem ilustrativa",
+    "zoomImagem": 1.5
   }
 ]
