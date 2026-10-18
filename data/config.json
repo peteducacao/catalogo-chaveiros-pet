@@ -1,5 +1,14 @@
 {
   "avisoImagens": "Imagens ilustrativas: as imagens atuais foram criadas apenas para representar os modelos de teste; não são fotografias dos chaveiros reais.",
   "homeDescription": "Conheça nosso catálogo! Para mais informações, acompanhe o Instagram do PET Educação.",
-  "catalogDescription": "Conheça nosso catálogo! Para mais informações, acompanhe o Instagram do PET Educação."
+  "catalogDescription": "Conheça nosso catálogo! Para mais informações, acompanhe o Instagram do PET Educação.",
+  "redesSociais": [
+    {
+      "id": "instagram-pet",
+      "nome": "Instagram",
+      "perfil": "@pet.educacao",
+      "url": "https://www.instagram.com/pet.educacao/",
+      "descricao": "Conheça mais sobre os chaveiros e acompanhe as atividades do PET."
+    }
+  ]
 }
