@@ -17,7 +17,8 @@
     "estoque": 1,
     "disponivel": true,
     "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa"
+    "legendaImagem": "Imagem ilustrativa",
+    "preco": 5
   },
   {
     "id": "ufs",
