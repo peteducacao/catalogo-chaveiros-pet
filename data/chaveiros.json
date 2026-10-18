@@ -2,7 +2,7 @@
   {
     "id": "pedagogia",
     "nome": "Chaveiro Pedagogia",
-    "descricao": "Modelo temático com referência ao curso de Pedagogia. Imagem ilustrativa.",
+    "descricao": "Modelo temático com referência ao curso de Pedagogia.",
     "imagem": "assets/mock-pedagogia.svg",
     "cores": [
       {
@@ -20,13 +20,13 @@
     ],
     "estoque": 7,
     "disponivel": true,
-    "demonstrativo": true,
-    "imagemIlustrativa": true
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa"
   },
   {
     "id": "pet",
     "nome": "Chaveiro PET",
-    "descricao": "Modelo inspirado na identidade visual do PET Educação. Imagem ilustrativa.",
+    "descricao": "Modelo inspirado na identidade visual do PET Educação.",
     "imagem": "assets/mock-pet.svg",
     "cores": [
       {
@@ -40,13 +40,13 @@
     ],
     "estoque": 4,
     "disponivel": true,
-    "demonstrativo": true,
-    "imagemIlustrativa": true
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa"
   },
   {
     "id": "ufs",
     "nome": "Chaveiro UFS",
-    "descricao": "Modelo demonstrativo com referência à UFS. Imagem ilustrativa.",
+    "descricao": "Modelo demonstrativo com referência à UFS.",
     "imagem": "assets/mock-ufs.svg",
     "cores": [
       {
@@ -60,13 +60,13 @@
     ],
     "estoque": 3,
     "disponivel": true,
-    "demonstrativo": true,
-    "imagemIlustrativa": true
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa"
   },
   {
     "id": "foptic",
     "nome": "Chaveiro FOPTIC",
-    "descricao": "Modelo demonstrativo com inscrição FOPTIC. Imagem ilustrativa.",
+    "descricao": "Modelo demonstrativo com inscrição FOPTIC.",
     "imagem": "assets/mock-foptic.svg",
     "cores": [
       {
@@ -84,7 +84,7 @@
     ],
     "estoque": 0,
     "disponivel": false,
-    "demonstrativo": true,
-    "imagemIlustrativa": true
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa"
   }
 ]

@@ -1,42 +1,40 @@
 # Catálogo de Chaveiros — PET Educação
 
-Site institucional demonstrativo do PET Educação — Conexão de Saberes.
+Catálogo institucional publicado pelo GitHub Pages. Apresenta fotos, cores e disponibilidade dos chaveiros. Sem preços, carrinho ou pagamentos.
 
 ## Páginas
-- `index.html`: capa e cartões de navegação
-- `catalogo.html`: modelos, cores disponíveis, estoque e filtros
-- `contato.html`: Instagram do PET
-- `painel.html`: editor demonstrativo de produtos
 
-As imagens dos modelos de teste são **ilustrativas**, e essa informação aparece nas fotos e descrições dos cards. Substitua por fotos reais antes de usar os produtos como catálogo oficial.
+- `index.html`: capa e botões Ver chaveiros e Saiba mais.
+- `catalogo.html`: modelos, cores, disponibilidade, pesquisa e filtros.
+- `contato.html`: Instagram do PET Educação.
+- `painel.html`: gerenciamento dos produtos e textos com acesso autorizado via GitHub.
 
-## Painel: limitação importante
+## Segurança do painel
 
-O painel está em um site público **estático do GitHub Pages**. O acesso usa verificação no navegador e **não constitui segurança real**. Não coloque informações sigilosas no painel nem reutilize uma senha pessoal. As alterações feitas nele usam `localStorage`: ficam **apenas neste navegador e dispositivo**. Elas **não atualizam o GitHub automaticamente**.
+**Não existe senha de administrador salva no HTML ou JavaScript.** O site público não consegue proteger uma senha própria de modo seguro sem backend. Em seu lugar, o painel usa a API do GitHub com **token de acesso refinado** (*fine-grained personal access token*), gerado **pelo proprietário do repositório** e restrito ao próprio repositório, com acesso `Contents: Read and write`. O GitHub valida a autorização. O token é utilizado somente na memória da página enquanto ela está aberta, sem persistência em `localStorage` ou `sessionStorage`; atualizar ou fechar a aba solicita novo acesso.
 
-Para atualizar o site para todos:
-1. Use o painel e clique em **Exportar JSON**.
-2. Abra o arquivo `data/chaveiros.json` do repositório.
-3. Substitua seu conteúdo pelo JSON exportado e faça commit.
-4. Acrescente suas fotos reais à pasta `assets/`, caso use caminhos locais.
-5. Aguarde o GitHub Pages atualizar o site.
+1. Acesse https://github.com/settings/personal-access-tokens/new.
+2. Crie um token **fine-grained**, com validade limitada e acesso **apenas** a `peteducacao/catalogo-chaveiros-pet`.
+3. Em **Repository permissions**, selecione **Contents → Read and write**. O GitHub fornece Metadata/Read automaticamente.
+4. Cole o token **apenas no formulário do painel** — nunca no chat, em arquivos do repositório ou em mensagens.
+5. Revogue o token em https://github.com/settings/personal-access-tokens se desejar encerrar o acesso.
 
-Para um painel seguro com alterações globais instantâneas, implemente depois um serviço de autenticação real e um banco de dados.
+**Nota:** O navegador precisa ter acesso à API REST do GitHub. A fonte HTML e JavaScript continuará visível em “Inspecionar” porque GitHub Pages é estático. Os dados públicos do catálogo continuam públicos; **nenhum segredo ou senha de administrador** fica codificado nos arquivos. Um token pessoal pode ser visto pelo próprio usuário no tráfego da sua sessão e deve ser protegido. A antiga senha demonstrativa foi retirada do código atual, mas commits históricos podem mantê-la no histórico: **não a reutilize em outros serviços**.
 
-### Estrutura de um produto
+## Como editar
 
-```json
-{
-  "id": "pedagogia",
-  "nome": "Chaveiro Pedagogia",
-  "descricao": "Modelo de teste. Imagem ilustrativa.",
-  "imagem": "assets/mock-pedagogia.svg",
-  "cores": [{"nome": "Azul", "hex": "#2f6ec9"}],
-  "estoque": 7,
-  "disponivel": true,
-  "imagemIlustrativa": true,
-  "demonstrativo": true
-}
-```
+Entre no painel com seu token. O botão **+ Novo chaveiro** abre um formulário com nome, descrição, imagem e cores. Você pode enviar uma foto diretamente do computador: a página a converte para WebP e a envia para `assets/produtos/` utilizando a API autenticada do GitHub. Também pode colar uma URL direta HTTPS de imagem, como `https://i.imgur.com/arquivo.jpg` (links de álbuns ou páginas não funcionam como imagem).
 
-Não há preços nem pagamentos. O botão **Saiba mais** leva para `https://www.instagram.com/pet.educacao/`.
+Cada cartão do painel tem **Disponível / Sem estoque**, **Editar** e **Excluir**. A disponibilidade é salva no `data/chaveiros.json` por commit. Na aba **Textos do catálogo**, o aviso geral é editado no `data/config.json`.
+
+O GitHub Pages publica os novos commits automaticamente, podendo demorar alguns minutos. Alterações são **compartilhadas** após a publicação, não apenas neste navegador.
+
+## Estrutura de dados
+
+- `data/chaveiros.json`: array com `nome`, `descricao`, `imagem`, `cores`, `estoque`, `disponivel`, `imagemIlustrativa`, `legendaImagem`.
+- `data/config.json`: `avisoImagens` para a mensagem geral acima da galeria.
+- `assets/produtos/`: imagens enviadas pelo painel.
+
+## Desenvolvedor
+
+Sem frameworks nem serviços pagos; HTML, CSS e JavaScript. Configuração explícita de CSP, sem JavaScript de bibliotecas externas. **GitHub Pages continua hospedando somente o catálogo estático; as alterações são realizadas por chamadas à API do GitHub com autorização explícita do titular.**
