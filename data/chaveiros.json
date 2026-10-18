@@ -2,7 +2,7 @@
   {
     "id": "pedagogia",
     "nome": "Chaveiro Pedagogia",
-    "descricao": "Modelo temático com referência ao curso de Pedagogia.",
+    "descricao": "Modelo temático",
     "imagem": "assets/mock-pedagogia.svg",
     "cores": [
       {
