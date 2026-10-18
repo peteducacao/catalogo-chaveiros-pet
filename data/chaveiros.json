@@ -1,29 +1,5 @@
 [
   {
-    "id": "pedagogia",
-    "nome": "Chaveiro Pedagogia",
-    "descricao": "Modelo temático",
-    "imagem": "assets/mock-pedagogia.svg",
-    "cores": [
-      {
-        "nome": "Azul",
-        "hex": "#2f6ec9"
-      },
-      {
-        "nome": "Branco",
-        "hex": "#ffffff"
-      },
-      {
-        "nome": "Rosa",
-        "hex": "#e8aac6"
-      }
-    ],
-    "estoque": 7,
-    "disponivel": true,
-    "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa"
-  },
-  {
     "id": "pet",
     "nome": "Chaveiro PET",
     "descricao": "Modelo inspirado na identidade visual do PET Educação.",
