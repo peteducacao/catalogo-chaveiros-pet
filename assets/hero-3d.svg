@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" role="img" aria-labelledby="title desc">
+<title id="title">Ilustração de impressora 3D</title>
+<desc id="desc">Desenho estilizado de impressora 3D com filamentos nas cores azul e turquesa.</desc>
+<rect width="900" height="700" rx="44" fill="#F7F3ED"/>
+<ellipse cx="430" cy="555" rx="260" ry="72" fill="#DDEBE8"/>
+<circle cx="195" cy="170" r="110" fill="#E9F5F3"/>
+<circle cx="720" cy="150" r="86" fill="#E8EEF7"/>
+<g transform="translate(176 110)">
+<rect x="120" y="58" width="290" height="340" rx="28" fill="#FCFCFB" stroke="#173D72" stroke-width="18"/>
+<rect x="154" y="96" width="220" height="220" rx="22" fill="#EEF5F7" stroke="#C9D8E3" stroke-width="10"/>
+<path d="M264 130c54 0 98 44 98 98s-44 98-98 98-98-44-98-98 44-98 98-98Z" fill="#DDF4EF" stroke="#1FB4BA" stroke-width="12" stroke-dasharray="10 12"/>
+<path d="M264 130v196M166 228h196" stroke="#A7B8C7" stroke-width="6" stroke-dasharray="12 10"/>
+<path d="M242 196c0-18 10-28 22-28 14 0 24 12 24 30 0 24-19 31-29 48-5 8-8 19-8 32" fill="none" stroke="#173D72" stroke-width="16" stroke-linecap="round"/>
+<circle cx="255" cy="290" r="10" fill="#173D72"/>
+<rect x="235" y="16" width="66" height="64" rx="18" fill="#173D72"/>
+<rect x="250" y="36" width="36" height="24" rx="8" fill="#1FB4BA"/>
+<rect x="176" y="390" width="176" height="28" rx="14" fill="#173D72"/>
+<rect x="204" y="418" width="122" height="22" rx="11" fill="#8FB8D7"/>
+<path d="M120 58L78 12M410 58L452 12M120 398L78 444M410 398L452 444" stroke="#173D72" stroke-width="14" stroke-linecap="round"/>
+</g>
+<g transform="translate(70 420)">
+<circle cx="70" cy="70" r="62" fill="#173D72"/><circle cx="70" cy="70" r="42" fill="#1FB4BA"/><circle cx="70" cy="70" r="26" fill="#FCF7F0"/><circle cx="70" cy="70" r="9" fill="#173D72"/>
+<path d="M132 70h65" stroke="#173D72" stroke-width="14" stroke-linecap="round"/>
+<path d="M164 40c23 2 42 16 55 37" stroke="#1FB4BA" stroke-width="10" stroke-linecap="round" fill="none"/>
+</g>
+<g transform="translate(620 388)">
+<circle cx="82" cy="82" r="74" fill="#173D72"/><circle cx="82" cy="82" r="52" fill="#8FB8D7"/><circle cx="82" cy="82" r="34" fill="#FCF7F0"/><circle cx="82" cy="82" r="11" fill="#173D72"/>
+<path d="M156 82h84" stroke="#173D72" stroke-width="14" stroke-linecap="round"/>
+<path d="M186 42c30 8 52 28 65 56" stroke="#1FB4BA" stroke-width="10" stroke-linecap="round" fill="none"/>
+</g>
+</svg>
