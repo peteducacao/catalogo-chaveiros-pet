@@ -19,7 +19,7 @@
     "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
-    "mostrarCores": true
+    "mostrarCores": false
   },
   {
     "id": "pet",
