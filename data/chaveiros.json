@@ -67,12 +67,8 @@
     "id": "foptic",
     "nome": "Chaveiro FOPTIC",
     "descricao": "Modelo demonstrativo com inscrição FOPTIC.",
-    "imagem": "assets/mock-foptic.svg",
+    "imagem": "assets/produtos/1000302907-1792344181427.webp",
     "cores": [
-      {
-        "nome": "Verde",
-        "hex": "#18a69b"
-      },
       {
         "nome": "Branco",
         "hex": "#ffffff"
@@ -82,8 +78,8 @@
         "hex": "#217cc0"
       }
     ],
-    "estoque": 0,
-    "disponivel": false,
+    "estoque": 75,
+    "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa"
   }
