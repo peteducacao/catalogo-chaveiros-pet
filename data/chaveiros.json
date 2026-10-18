@@ -1,5 +1,26 @@
 [
   {
+    "id": "chaveiro-1792354717559",
+    "nome": "Chaveiro GEES",
+    "descricao": "Chaveiro do grupo de estudos GEES",
+    "imagem": "assets/produtos/491452867_17855055783430638_2324-1792354715996.webp",
+    "cores": [
+      {
+        "nome": "Branco",
+        "hex": "#FFFFFF"
+      },
+      {
+        "nome": "Verde",
+        "hex": "#1DA88B"
+      }
+    ],
+    "estoque": 25,
+    "preco": 3.5,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa"
+  },
+  {
     "id": "pet",
     "nome": "Chaveiro PET",
     "descricao": "Modelo inspirado na identidade visual do PET Educação.",
