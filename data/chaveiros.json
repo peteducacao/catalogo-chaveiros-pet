@@ -83,6 +83,6 @@
     "legendaImagem": "Imagem ilustrativa",
     "zoomImagem": 1.5,
     "preco": 3.5,
-    "mostrarCores": true
+    "mostrarCores": false
   }
 ]
