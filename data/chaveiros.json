@@ -15,10 +15,11 @@
       }
     ],
     "estoque": 25,
-    "preco": 3.5,
+    "preco": 4,
     "disponivel": true,
     "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa"
+    "legendaImagem": "Imagem ilustrativa",
+    "mostrarCores": true
   },
   {
     "id": "pet",
