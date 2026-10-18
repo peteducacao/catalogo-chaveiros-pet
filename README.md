@@ -1,61 +1,42 @@
 # Catálogo de Chaveiros — PET Educação
 
-Site informativo do PET Educação — Conexão de Saberes, com páginas independentes, catálogo de modelos e link **Saiba mais** para [@pet.educacao](https://www.instagram.com/pet.educacao/).
-
-> **Versão demonstrativa:** os quatro produtos, imagens ilustrativas, cores e disponibilidade são exemplos de teste. Não há preços, carrinho ou pagamentos no site.
+Site institucional demonstrativo do PET Educação — Conexão de Saberes.
 
 ## Páginas
-- `index.html` — capa com três cartões de navegação
-- `catalogo.html` — modelos, cores disponíveis, disponibilidade, busca e filtros
-- `como-funciona.html` — como navegar e consultar informações
-- `contato.html` — Instagram do PET
+- `index.html`: capa e cartões de navegação
+- `catalogo.html`: modelos, cores disponíveis, estoque e filtros
+- `contato.html`: Instagram do PET
+- `painel.html`: editor demonstrativo de produtos
 
-## Como alterar os chaveiros
+As imagens dos modelos de teste são **ilustrativas**, e essa informação aparece nas fotos e descrições dos cards. Substitua por fotos reais antes de usar os produtos como catálogo oficial.
 
-Use o arquivo [`data/chaveiros.json`](data/chaveiros.json). Cada item contém:
-- `id`: identificador único (sem espaços)
-- `nome`: nome do chaveiro
-- `descricao`: descrição curta
-- `imagem`: caminho da foto, por exemplo `assets/meu-chaveiro.jpg`
-- `cores`: lista de cores, com `nome` e código hexadecimal `hex`
-- `disponivel`: `true` ou `false`; `false` mostra **Sem estoque**
-- `demonstrativo`: `true` mostra **MODELO DE TESTE**, `false` mostra **MODELO PET**
+## Painel: limitação importante
 
-Para adicionar um modelo, duplique um objeto dentro do array JSON, altere seus dados e faça commit. Para excluir, remova seu objeto. Você também pode acrescentar fotos em `assets/` pelo editor do GitHub. **Nunca coloque senhas, tokens ou dados privados no repositório público.**
+O painel está em um site público **estático do GitHub Pages**. O acesso usa verificação no navegador e **não constitui segurança real**. Não coloque informações sigilosas no painel nem reutilize uma senha pessoal. As alterações feitas nele usam `localStorage`: ficam **apenas neste navegador e dispositivo**. Elas **não atualizam o GitHub automaticamente**.
 
-## Editar sem instalar nada
+Para atualizar o site para todos:
+1. Use o painel e clique em **Exportar JSON**.
+2. Abra o arquivo `data/chaveiros.json` do repositório.
+3. Substitua seu conteúdo pelo JSON exportado e faça commit.
+4. Acrescente suas fotos reais à pasta `assets/`, caso use caminhos locais.
+5. Aguarde o GitHub Pages atualizar o site.
 
-No GitHub: abra o arquivo `data/chaveiros.json`, clique no lápis (Edit), altere os dados e use **Commit changes**. Os visitantes verão a atualização após a publicação da nova versão no GitHub Pages.
+Para um painel seguro com alterações globais instantâneas, implemente depois um serviço de autenticação real e um banco de dados.
 
-## Visualizar localmente
+### Estrutura de um produto
 
-O catálogo carrega JSON por `fetch`, então use um servidor local (abrir o HTML diretamente com `file://` pode bloquear o carregamento). Exemplo com Python:
-
-```bash
-python -m http.server 8000
+```json
+{
+  "id": "pedagogia",
+  "nome": "Chaveiro Pedagogia",
+  "descricao": "Modelo de teste. Imagem ilustrativa.",
+  "imagem": "assets/mock-pedagogia.svg",
+  "cores": [{"nome": "Azul", "hex": "#2f6ec9"}],
+  "estoque": 7,
+  "disponivel": true,
+  "imagemIlustrativa": true,
+  "demonstrativo": true
+}
 ```
 
-Depois acesse http://localhost:8000
-
-## Publicar, se decidir fazer isso
-
-No repositório: **Settings → Pages → Build and deployment → Deploy from a branch → main / (root) → Save**. Publique somente após conferir os dados, as imagens e as regras de uso do GitHub Pages. A criação de arquivos neste repositório **não ativa automaticamente o GitHub Pages**.
-
-## Administração futura
-
-Esta primeira versão evita um login falso/inseguro dentro de um site estático: o acesso de edição é feito pelo próprio GitHub, autenticado. Um painel privado com cadastro e fotos em tempo real exigirá autenticação e armazenamento separados; pode ser acrescentado mais tarde.
-
-## Estrutura
-```text
-├── index.html
-├── catalogo.html
-├── como-funciona.html
-├── contato.html
-├── data/chaveiros.json
-└── assets/
-    ├── styles.css
-    ├── app.js
-    ├── logo-pet.svg
-    ├── favicon.svg
-    └── mock-*.svg
-```
+Não há preços nem pagamentos. O botão **Saiba mais** leva para `https://www.instagram.com/pet.educacao/`.

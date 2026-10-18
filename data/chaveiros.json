@@ -2,81 +2,89 @@
   {
     "id": "pedagogia",
     "nome": "Chaveiro Pedagogia",
-    "descricao": "Modelo temático com referência à Pedagogia.",
+    "descricao": "Modelo temático com referência ao curso de Pedagogia. Imagem ilustrativa.",
     "imagem": "assets/mock-pedagogia.svg",
     "cores": [
       {
         "nome": "Azul",
-        "hex": "#378CD5"
+        "hex": "#2f6ec9"
       },
       {
         "nome": "Branco",
-        "hex": "#FFFFFF"
+        "hex": "#ffffff"
       },
       {
         "nome": "Rosa",
-        "hex": "#E9A6BF"
+        "hex": "#e8aac6"
       }
     ],
+    "estoque": 7,
     "disponivel": true,
-    "demonstrativo": true
+    "demonstrativo": true,
+    "imagemIlustrativa": true
   },
   {
     "id": "pet",
     "nome": "Chaveiro PET",
-    "descricao": "Modelo inspirado na identidade PET — Conexão de Saberes.",
+    "descricao": "Modelo inspirado na identidade visual do PET Educação. Imagem ilustrativa.",
     "imagem": "assets/mock-pet.svg",
     "cores": [
       {
         "nome": "Azul PET",
-        "hex": "#00ACE5"
+        "hex": "#0fabe2"
       },
       {
         "nome": "Branco",
-        "hex": "#FFFFFF"
+        "hex": "#ffffff"
       }
     ],
+    "estoque": 4,
     "disponivel": true,
-    "demonstrativo": true
+    "demonstrativo": true,
+    "imagemIlustrativa": true
   },
   {
     "id": "ufs",
     "nome": "Chaveiro UFS",
-    "descricao": "Modelo com referência à Universidade Federal de Sergipe.",
+    "descricao": "Modelo demonstrativo com referência à UFS. Imagem ilustrativa.",
     "imagem": "assets/mock-ufs.svg",
     "cores": [
       {
         "nome": "Azul",
-        "hex": "#2265BD"
+        "hex": "#215cb0"
       },
       {
         "nome": "Branco",
-        "hex": "#FFFFFF"
+        "hex": "#ffffff"
       }
     ],
+    "estoque": 3,
     "disponivel": true,
-    "demonstrativo": true
+    "demonstrativo": true,
+    "imagemIlustrativa": true
   },
   {
     "id": "foptic",
     "nome": "Chaveiro FOPTIC",
-    "descricao": "Modelo demonstrativo com inscrição FOPTIC.",
+    "descricao": "Modelo demonstrativo com inscrição FOPTIC. Imagem ilustrativa.",
     "imagem": "assets/mock-foptic.svg",
     "cores": [
       {
         "nome": "Verde",
-        "hex": "#18A69B"
+        "hex": "#18a69b"
       },
       {
         "nome": "Branco",
-        "hex": "#FFFFFF"
+        "hex": "#ffffff"
       },
       {
         "nome": "Azul",
-        "hex": "#217CC0"
+        "hex": "#217cc0"
       }
     ],
+    "estoque": 0,
     "disponivel": false,
-    "demonstrativo": true
+    "demonstrativo": true,
+    "imagemIlustrativa": true
   }
 ]
