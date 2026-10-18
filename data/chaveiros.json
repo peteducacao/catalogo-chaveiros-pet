@@ -59,6 +59,7 @@
     "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
-    "zoomImagem": 1.5
+    "zoomImagem": 1.5,
+    "preco": 10
   }
 ]
