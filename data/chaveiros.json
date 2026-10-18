@@ -1,0 +1,82 @@
+[
+  {
+    "id": "pedagogia",
+    "nome": "Chaveiro Pedagogia",
+    "descricao": "Modelo temático com referência à Pedagogia.",
+    "imagem": "assets/mock-pedagogia.svg",
+    "cores": [
+      {
+        "nome": "Azul",
+        "hex": "#378CD5"
+      },
+      {
+        "nome": "Branco",
+        "hex": "#FFFFFF"
+      },
+      {
+        "nome": "Rosa",
+        "hex": "#E9A6BF"
+      }
+    ],
+    "disponivel": true,
+    "demonstrativo": true
+  },
+  {
+    "id": "pet",
+    "nome": "Chaveiro PET",
+    "descricao": "Modelo inspirado na identidade PET — Conexão de Saberes.",
+    "imagem": "assets/mock-pet.svg",
+    "cores": [
+      {
+        "nome": "Azul PET",
+        "hex": "#00ACE5"
+      },
+      {
+        "nome": "Branco",
+        "hex": "#FFFFFF"
+      }
+    ],
+    "disponivel": true,
+    "demonstrativo": true
+  },
+  {
+    "id": "ufs",
+    "nome": "Chaveiro UFS",
+    "descricao": "Modelo com referência à Universidade Federal de Sergipe.",
+    "imagem": "assets/mock-ufs.svg",
+    "cores": [
+      {
+        "nome": "Azul",
+        "hex": "#2265BD"
+      },
+      {
+        "nome": "Branco",
+        "hex": "#FFFFFF"
+      }
+    ],
+    "disponivel": true,
+    "demonstrativo": true
+  },
+  {
+    "id": "foptic",
+    "nome": "Chaveiro FOPTIC",
+    "descricao": "Modelo demonstrativo com inscrição FOPTIC.",
+    "imagem": "assets/mock-foptic.svg",
+    "cores": [
+      {
+        "nome": "Verde",
+        "hex": "#18A69B"
+      },
+      {
+        "nome": "Branco",
+        "hex": "#FFFFFF"
+      },
+      {
+        "nome": "Azul",
+        "hex": "#217CC0"
+      }
+    ],
+    "disponivel": false,
+    "demonstrativo": true
+  }
+]
