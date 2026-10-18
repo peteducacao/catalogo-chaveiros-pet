@@ -57,7 +57,7 @@
       }
     ],
     "estoque": 5,
-    "disponivel": false,
+    "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa"
   },
