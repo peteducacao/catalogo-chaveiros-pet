@@ -67,7 +67,7 @@
     "id": "foptic",
     "nome": "Chaveiro FOPTIC",
     "descricao": "Modelo demonstrativo com inscrição FOPTIC.",
-    "imagem": "assets/produtos/1000302907-1792344181427.webp",
+    "imagem": "assets/mock-foptic.svg",
     "cores": [
       {
         "nome": "Branco",
