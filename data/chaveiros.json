@@ -1,28 +1,5 @@
 [
   {
-    "id": "chaveiro-1792354717559",
-    "nome": "Chaveiro GEES",
-    "descricao": "Chaveiro do grupo de estudos GEES",
-    "imagem": "assets/produtos/491452867_17855055783430638_2324-1792354715996.webp",
-    "cores": [
-      {
-        "nome": "Branco",
-        "hex": "#FFFFFF"
-      },
-      {
-        "nome": "Verde",
-        "hex": "#1DA88B"
-      }
-    ],
-    "estoque": 25,
-    "preco": 4,
-    "disponivel": true,
-    "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa",
-    "mostrarCores": false,
-    "ordem": 1
-  },
-  {
     "id": "foptic",
     "nome": "Chaveiro FOPTIC",
     "descricao": "Modelo demonstrativo FOPTIC.",
@@ -44,7 +21,51 @@
     "zoomImagem": 1.5,
     "preco": 3.5,
     "mostrarCores": false,
+    "ordem": 1
+  },
+  {
+    "id": "chaveiro-1792354717559",
+    "nome": "Chaveiro GEES",
+    "descricao": "Chaveiro do grupo de estudos GEES",
+    "imagem": "assets/produtos/491452867_17855055783430638_2324-1792354715996.webp",
+    "cores": [
+      {
+        "nome": "Branco",
+        "hex": "#FFFFFF"
+      },
+      {
+        "nome": "Verde",
+        "hex": "#1DA88B"
+      }
+    ],
+    "estoque": 25,
+    "preco": 4,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa",
+    "mostrarCores": false,
     "ordem": 2
+  },
+  {
+    "id": "ufs",
+    "nome": "Chaveiro UFS",
+    "descricao": "Modelo demonstrativo com referência à UFS.",
+    "imagem": "assets/mock-ufs.svg",
+    "cores": [
+      {
+        "nome": "Azul",
+        "hex": "#215cb0"
+      },
+      {
+        "nome": "Branco",
+        "hex": "#ffffff"
+      }
+    ],
+    "estoque": 5,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa",
+    "ordem": 3
   },
   {
     "id": "pet",
@@ -66,27 +87,6 @@
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
     "preco": 5,
-    "ordem": 3
-  },
-  {
-    "id": "ufs",
-    "nome": "Chaveiro UFS",
-    "descricao": "Modelo demonstrativo com referência à UFS.",
-    "imagem": "assets/mock-ufs.svg",
-    "cores": [
-      {
-        "nome": "Azul",
-        "hex": "#215cb0"
-      },
-      {
-        "nome": "Branco",
-        "hex": "#ffffff"
-      }
-    ],
-    "estoque": 5,
-    "disponivel": true,
-    "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa",
     "ordem": 4
   }
 ]
