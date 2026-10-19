@@ -10,5 +10,11 @@
       "url": "https://www.instagram.com/pet.educacao/",
       "descricao": "Conheça mais sobre os chaveiros e acompanhe as atividades do PET."
     }
-  ]
+  ],
+  "siteInstitucional": {
+    "titulo": "peteduca.com.br",
+    "url": "https://peteduca.com.br/",
+    "descricao": "Conheça o site do PET Educação. Não é um canal de contato ou encomendas deste catálogo.",
+    "visivel": true
+  }
 }
