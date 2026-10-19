@@ -47,27 +47,6 @@
     "ordem": 2
   },
   {
-    "id": "ufs",
-    "nome": "Chaveiro UFS",
-    "descricao": "Modelo demonstrativo com referência à UFS.",
-    "imagem": "assets/mock-ufs.svg",
-    "cores": [
-      {
-        "nome": "Azul",
-        "hex": "#215cb0"
-      },
-      {
-        "nome": "Branco",
-        "hex": "#ffffff"
-      }
-    ],
-    "estoque": 5,
-    "disponivel": true,
-    "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa",
-    "ordem": 4
-  },
-  {
     "id": "pet",
     "nome": "Chaveiro PET",
     "descricao": "Modelo inspirado na identidade visual do PET Educação.",
@@ -88,5 +67,26 @@
     "legendaImagem": "Imagem ilustrativa",
     "preco": 5,
     "ordem": 3
+  },
+  {
+    "id": "ufs",
+    "nome": "Chaveiro UFS",
+    "descricao": "Modelo demonstrativo com referência à UFS.",
+    "imagem": "assets/mock-ufs.svg",
+    "cores": [
+      {
+        "nome": "Azul",
+        "hex": "#215cb0"
+      },
+      {
+        "nome": "Branco",
+        "hex": "#ffffff"
+      }
+    ],
+    "estoque": 5,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem ilustrativa",
+    "ordem": 4
   }
 ]
