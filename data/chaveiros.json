@@ -66,27 +66,5 @@
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
     "ordem": 3
-  },
-  {
-    "id": "pet",
-    "nome": "Chaveiro PET",
-    "descricao": "Modelo inspirado na identidade visual do PET Educação.",
-    "imagem": "assets/mock-pet.svg",
-    "cores": [
-      {
-        "nome": "Azul PET",
-        "hex": "#0fabe2"
-      },
-      {
-        "nome": "Branco",
-        "hex": "#ffffff"
-      }
-    ],
-    "estoque": 3,
-    "disponivel": true,
-    "imagemIlustrativa": true,
-    "legendaImagem": "Imagem ilustrativa",
-    "preco": 5,
-    "ordem": 4
   }
 ]
