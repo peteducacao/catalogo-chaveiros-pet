@@ -27,7 +27,7 @@
     "id": "chaveiro-1792354717559",
     "nome": "Chaveiro GEES",
     "descricao": "Chaveiro do grupo de estudos GEES",
-    "imagem": "assets/produtos/491452867_17855055783430638_2324-1792354715996.webp",
+    "imagem": "assets/produtos/1000303967-1792381077943.webp",
     "cores": [
       {
         "nome": "Branco",
@@ -38,8 +38,8 @@
         "hex": "#1DA88B"
       }
     ],
-    "estoque": 25,
-    "preco": 4,
+    "estoque": 1,
+    "preco": 3,
     "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
