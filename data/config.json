@@ -17,5 +17,8 @@
     "descricao": "Conheça o site do PET Educação!",
     "visivel": true
   },
-  "homeFeaturedIds": []
+  "homeFeaturedIds": [
+    "foptic",
+    "chaveiro-1792354717559"
+  ]
 }
