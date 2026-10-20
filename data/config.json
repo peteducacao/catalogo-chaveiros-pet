@@ -20,5 +20,13 @@
   "homeFeaturedIds": [
     "foptic",
     "chaveiro-1792354717559"
-  ]
+  ],
+  "contatoInstitucional": {
+    "instituicao": "Universidade Federal de Sergipe — Campus Prof. Alberto Carvalho",
+    "endereco": "Av. Vereador Olímpio Grande, s/n",
+    "cidade": "Itabaiana/SE",
+    "cep": "49506-036",
+    "telefone": "(79) 3432-8217",
+    "email": "petedusaber@gmail.com"
+  }
 }
