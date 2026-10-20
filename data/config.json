@@ -69,6 +69,10 @@
     {
       "nome": "Laranja",
       "hex": "#ED9553"
+    },
+    {
+      "nome": "Ciano",
+      "hex": "#43C493"
     }
   ]
 }
