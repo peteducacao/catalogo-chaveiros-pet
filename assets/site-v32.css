@@ -1513,6 +1513,19 @@ body[data-page="catalogo"] .product-zoom-hint{
   font:800 27px/1 'DM Sans',sans-serif;
   pointer-events:none;
 }
+body[data-page="catalogo"] .product-zoom-hint::before{
+  content:"";
+  width:12px;height:12px;
+  border:2px solid currentColor;border-radius:50%;
+  position:absolute;left:8px;top:8px;
+}
+body[data-page="catalogo"] .product-zoom-hint::after{
+  content:"";
+  width:9px;height:2px;
+  background:currentColor;border-radius:2px;
+  position:absolute;left:20px;top:21px;
+  transform:rotate(45deg);transform-origin:left center;
+}
 body[data-page="catalogo"] .product-image-viewer:focus-visible .product-zoom-hint{
   background:#173d72;color:white;
 }
