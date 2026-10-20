@@ -68,7 +68,7 @@
     "imagem": "assets/sem-foto.svg",
     "cores": [],
     "mostrarCores": true,
-    "estoque": 0,
+    "estoque": 1,
     "preco": null,
     "disponivel": true,
     "imagemIlustrativa": false,
