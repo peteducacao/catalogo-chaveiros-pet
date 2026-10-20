@@ -112,5 +112,21 @@
         "imagem": "assets/produtos/1000305100-c0a097b4-57e7-45bf-8950-07e36ca76d3f.webp"
       }
     ]
+  },
+  {
+    "tipoVariacao": "nenhuma",
+    "variacoes": [],
+    "id": "chaveiro-1792488763977",
+    "ordem": 5,
+    "nome": "Chaveiro Fé",
+    "descricao": "",
+    "imagem": "assets/produtos/1000305105-a7b37c59-d7ad-4996-997f-f3fd1cafb5a2.webp",
+    "cores": [],
+    "mostrarCores": true,
+    "estoque": 1,
+    "preco": 5,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem Ilustrativa"
   }
 ]
