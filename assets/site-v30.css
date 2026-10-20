@@ -978,3 +978,55 @@ body>.site-footer{flex-shrink:0;margin-top:auto}
  .social-color-settings{width:100%;justify-content:space-between}
  .social-color-preview{width:100%;max-width:none;min-height:72px}
 }
+
+/* Capa PET: animações leves, sem bibliotecas e sem repinturas constantes.
+   A bolinha pulsa discretamente. Os demais elementos fazem uma única entrada. */
+@keyframes petDotPulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.35;transform:scale(.78)}
+}
+@keyframes petSoftReveal{
+  from{opacity:0;transform:translate3d(0,12px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes petPhotoReveal{
+  from{opacity:0;translate:0 13px}
+  to{opacity:1;translate:0 0}
+}
+@media(prefers-reduced-motion:no-preference){
+  body[data-page="inicio"] .hero-featured .eyebrow-dot{
+    transform-origin:center;
+    animation:petDotPulse 3.2s ease-in-out infinite;
+  }
+  body[data-page="inicio"] .hero-featured .hero-copy>.eyebrow{
+    animation:petSoftReveal .58s ease-out both;
+  }
+  body[data-page="inicio"] .hero-featured .hero-title{
+    animation:petSoftReveal .68s ease-out .1s both;
+  }
+  body[data-page="inicio"] .hero-featured .hero-description{
+    animation:petSoftReveal .68s ease-out .20s both;
+  }
+  body[data-page="inicio"] .hero-featured .hero-actions{
+    animation:petSoftReveal .68s ease-out .29s both;
+  }
+  body[data-page="inicio"] .home-feature-gallery:not([hidden]) .home-feature-photo{
+    animation:petPhotoReveal .68s cubic-bezier(.2,.78,.35,1) both;
+  }
+  body[data-page="inicio"] .home-feature-gallery:not([hidden]) .home-feature-photo:nth-child(1){animation-delay:.18s}
+  body[data-page="inicio"] .home-feature-gallery:not([hidden]) .home-feature-photo:nth-child(2){animation-delay:.32s}
+  body[data-page="inicio"] .home-feature-gallery:not([hidden]) .home-feature-photo:nth-child(3){animation-delay:.45s}
+}
+/* Desativa todas as animações novas para usuários que solicitam menos movimento. */
+@media(prefers-reduced-motion:reduce){
+  body[data-page="inicio"] .hero-featured .eyebrow-dot,
+  body[data-page="inicio"] .hero-featured .hero-copy>.eyebrow,
+  body[data-page="inicio"] .hero-featured .hero-title,
+  body[data-page="inicio"] .hero-featured .hero-description,
+  body[data-page="inicio"] .hero-featured .hero-actions,
+  body[data-page="inicio"] .home-feature-photo{
+    animation:none!important;
+    opacity:1!important;
+    translate:none!important;
+  }
+}
