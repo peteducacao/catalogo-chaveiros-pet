@@ -3,7 +3,7 @@
     "id": "foptic",
     "nome": "Chaveiro FOPTIC",
     "descricao": "Modelo demonstrativo FOPTIC.",
-    "imagem": "assets/produtos/a55c58fb-5d20-4666-867a-3a5d50ca-1792365837947.webp",
+    "imagem": "assets/produtos/1000305097-8dd92041-c083-4cbd-bc7e-e3f122229fa0.webp",
     "cores": [
       {
         "nome": "Branco",
@@ -21,7 +21,9 @@
     "zoomImagem": 1.5,
     "preco": 3.5,
     "mostrarCores": false,
-    "ordem": 1
+    "ordem": 1,
+    "tipoVariacao": "nenhuma",
+    "variacoes": []
   },
   {
     "id": "chaveiro-1792354717559",
