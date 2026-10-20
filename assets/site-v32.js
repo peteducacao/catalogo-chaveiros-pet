@@ -81,7 +81,7 @@ function makeProductCard(product){
   expand.append(image);
   const zoomHint=node('span','product-zoom-hint');
   zoomHint.setAttribute('aria-hidden','true');
-  zoomHint.textContent='⌕';
+  // Lupa desenhada pelo CSS, mantendo ícone consistente sem fontes ou imagens extras.
   expand.append(zoomHint);
   expand.addEventListener('click',()=>openProductImage(product));
   visual.append(expand);
