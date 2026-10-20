@@ -218,8 +218,10 @@ function prepareHomeShowcasePhoto(image,source){
       output.toBlob(blob=>{
         if(!blob||!image.isConnected)return;
         const cutout=URL.createObjectURL(blob);
-        image.addEventListener('load',()=>URL.revokeObjectURL(cutout),{once:true});
-        image.closest('.home-feature-photo')?.classList.add('home-photo-cutout-applied');
+        image.addEventListener('load',()=>{
+          image.closest('.home-feature-photo')?.classList.add('home-photo-cutout-applied');
+          URL.revokeObjectURL(cutout);
+        },{once:true});
         image.src=cutout;
       },'image/webp',.91);
     }catch(error){
