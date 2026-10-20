@@ -149,5 +149,21 @@
     "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem Ilustrativa"
+  },
+  {
+    "tipoVariacao": "nenhuma",
+    "variacoes": [],
+    "id": "chaveiro-1792491054834",
+    "ordem": 7,
+    "nome": "Chaveiro HarryPotter - Tipo 2",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [],
+    "mostrarCores": true,
+    "estoque": 1,
+    "preco": 5,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem Ilustrativa"
   }
 ]
