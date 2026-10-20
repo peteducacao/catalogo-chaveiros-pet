@@ -75,8 +75,8 @@
     "estoque": 1,
     "preco": 6,
     "disponivel": true,
-    "imagemIlustrativa": false,
-    "legendaImagem": "",
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem Ilustrativa",
     "tipoVariacao": "combinacao",
     "variacoes": [
       {
