@@ -76,7 +76,7 @@
     "preco": null,
     "disponivel": true,
     "imagemIlustrativa": false,
-    "legendaImagem": "Imagem ilustrativa",
+    "legendaImagem": "",
     "tipoVariacao": "combinacao",
     "variacoes": [
       {
@@ -94,6 +94,22 @@
         ],
         "estoque": 1,
         "imagem": "assets/produtos/1000305099-d2d984b1-e7e4-4ab0-8d97-9b51a33c9da5.webp"
+      },
+      {
+        "id": "variacao-90c6c33d-fcb0-46bd-9ff1-200995f8ce2c",
+        "nome": "Azul PET e Branco",
+        "cores": [
+          {
+            "nome": "Azul PET",
+            "hex": "#0FABE2"
+          },
+          {
+            "nome": "Branco",
+            "hex": "#FFFFFF"
+          }
+        ],
+        "estoque": null,
+        "imagem": "assets/produtos/1000305100-c0a097b4-57e7-45bf-8950-07e36ca76d3f.webp"
       }
     ]
   }
