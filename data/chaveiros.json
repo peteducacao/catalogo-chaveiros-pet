@@ -73,7 +73,7 @@
     "cores": [],
     "mostrarCores": true,
     "estoque": 1,
-    "preco": null,
+    "preco": 6,
     "disponivel": true,
     "imagemIlustrativa": false,
     "legendaImagem": "",
