@@ -24,6 +24,20 @@
     "ordem": 1
   },
   {
+    "id": "chaveiro-1792468399151",
+    "ordem": 2,
+    "nome": "Pedagogia",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [],
+    "mostrarCores": true,
+    "estoque": 5,
+    "preco": 3,
+    "disponivel": true,
+    "imagemIlustrativa": false,
+    "legendaImagem": "Imagem ilustrativa"
+  },
+  {
     "id": "chaveiro-1792354717559",
     "nome": "Chaveiro GEES",
     "descricao": "Chaveiro do grupo de estudos GEES",
@@ -44,29 +58,6 @@
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
     "mostrarCores": false,
-    "ordem": 2
-  },
-  {
-    "id": "chaveiro-1792468399151",
-    "ordem": 3,
-    "nome": "Pedagogia",
-    "descricao": "",
-    "imagem": "assets/sem-foto.svg",
-    "cores": [
-      {
-        "nome": "Azul PET",
-        "hex": "#0FABE2"
-      },
-      {
-        "nome": "Verde",
-        "hex": "#1DA88B"
-      }
-    ],
-    "mostrarCores": true,
-    "estoque": 5,
-    "preco": 3,
-    "disponivel": true,
-    "imagemIlustrativa": false,
-    "legendaImagem": "Imagem ilustrativa"
+    "ordem": 3
   }
 ]
