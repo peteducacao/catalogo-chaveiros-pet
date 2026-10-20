@@ -165,5 +165,26 @@
     "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem Ilustrativa"
+  },
+  {
+    "tipoVariacao": "nenhuma",
+    "variacoes": [],
+    "id": "chaveiro-1792491084871",
+    "ordem": 8,
+    "nome": "Chaveiro HarryPotter - Tipo 3",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [
+      {
+        "nome": "Preto",
+        "hex": "#161B22"
+      }
+    ],
+    "mostrarCores": true,
+    "estoque": 1,
+    "preco": 5,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem Ilustrativa"
   }
 ]
