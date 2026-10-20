@@ -100,24 +100,10 @@
     ]
   },
   {
-    "id": "chaveiro-1792468399151",
-    "ordem": 4,
-    "nome": "Pedagogia",
-    "descricao": "",
-    "imagem": "assets/sem-foto.svg",
-    "cores": [],
-    "mostrarCores": true,
-    "estoque": 5,
-    "preco": 3,
-    "disponivel": true,
-    "imagemIlustrativa": false,
-    "legendaImagem": "Imagem ilustrativa"
-  },
-  {
     "tipoVariacao": "nenhuma",
     "variacoes": [],
     "id": "chaveiro-1792488763977",
-    "ordem": 5,
+    "ordem": 4,
     "nome": "Chaveiro Fé",
     "descricao": "",
     "imagem": "assets/produtos/1000305105-a7b37c59-d7ad-4996-997f-f3fd1cafb5a2.webp",
@@ -128,5 +114,19 @@
     "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem Ilustrativa"
+  },
+  {
+    "id": "chaveiro-1792468399151",
+    "ordem": 5,
+    "nome": "Pedagogia",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [],
+    "mostrarCores": true,
+    "estoque": 5,
+    "preco": 3,
+    "disponivel": true,
+    "imagemIlustrativa": false,
+    "legendaImagem": "Imagem ilustrativa"
   }
 ]
