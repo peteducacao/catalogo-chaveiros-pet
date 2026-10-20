@@ -339,9 +339,11 @@ async function initCatalog(){
     revealCards(cards);
     renderPagination(result.totalPages,page);
     if(paginationInfo){
+      // Não destacar a quantidade quando existem poucos modelos; indicador é útil em buscas/páginas.
+      paginationInfo.hidden=!query&&matches.length<=CATALOG_PAGE_SIZE;
       if(matches.length===0)paginationInfo.textContent=query?'Nenhum resultado encontrado':'Nenhum modelo nesta seção';
-      else if(query)paginationInfo.textContent=matches.length+' '+(matches.length===1?'modelo encontrado':'modelos encontrados')+' para sua pesquisa';
-      else paginationInfo.textContent=matches.length+' '+(matches.length===1?'modelo disponível nesta seção':'modelos disponíveis nesta seção');
+      else if(query)paginationInfo.textContent=matches.length+' '+(matches.length===1?'resultado encontrado':'resultados encontrados');
+      else paginationInfo.textContent=matches.length+' modelos nesta seção';
     }
     if(introCaption){
       introCaption.textContent=query?'Resultados para “'+(search.value||'').trim()+'”':(filter==='sem-estoque'?'Modelos temporariamente indisponíveis':'Explore os modelos produzidos pelo PET Educação.');
