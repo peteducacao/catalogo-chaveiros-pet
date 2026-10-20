@@ -28,5 +28,47 @@
     "cep": "49506-036",
     "telefone": "(79) 3432-8217",
     "email": "petedusaber@gmail.com"
-  }
+  },
+  "paletaCores": [
+    {
+      "nome": "Azul PET",
+      "hex": "#0FABE2"
+    },
+    {
+      "nome": "Azul-marinho",
+      "hex": "#173D72"
+    },
+    {
+      "nome": "Branco",
+      "hex": "#FFFFFF"
+    },
+    {
+      "nome": "Preto",
+      "hex": "#161B22"
+    },
+    {
+      "nome": "Rosa",
+      "hex": "#E8AAC6"
+    },
+    {
+      "nome": "Lilás",
+      "hex": "#A38AE0"
+    },
+    {
+      "nome": "Verde",
+      "hex": "#1DA88B"
+    },
+    {
+      "nome": "Amarelo",
+      "hex": "#F4C248"
+    },
+    {
+      "nome": "Vermelho",
+      "hex": "#D65353"
+    },
+    {
+      "nome": "Laranja",
+      "hex": "#ED9553"
+    }
+  ]
 }
