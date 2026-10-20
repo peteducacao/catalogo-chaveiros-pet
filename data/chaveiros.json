@@ -56,7 +56,7 @@
     "mostrarCores": true,
     "estoque": 5,
     "preco": 3,
-    "disponivel": true,
+    "disponivel": false,
     "imagemIlustrativa": false,
     "legendaImagem": "Imagem ilustrativa"
   },
