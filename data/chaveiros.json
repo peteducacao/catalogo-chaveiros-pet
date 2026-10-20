@@ -59,5 +59,19 @@
     "disponivel": false,
     "imagemIlustrativa": false,
     "legendaImagem": "Imagem ilustrativa"
+  },
+  {
+    "id": "chaveiro-1792469245602",
+    "ordem": 4,
+    "nome": "Monster",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [],
+    "mostrarCores": true,
+    "estoque": 0,
+    "preco": null,
+    "disponivel": true,
+    "imagemIlustrativa": false,
+    "legendaImagem": "Imagem ilustrativa"
   }
 ]
