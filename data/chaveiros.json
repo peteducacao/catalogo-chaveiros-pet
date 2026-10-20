@@ -72,6 +72,25 @@
     "preco": null,
     "disponivel": true,
     "imagemIlustrativa": false,
-    "legendaImagem": "Imagem ilustrativa"
+    "legendaImagem": "Imagem ilustrativa",
+    "tipoVariacao": "combinacao",
+    "variacoes": [
+      {
+        "id": "variacao-cfbb8d7a-3483-4608-884d-8c10d15bc297",
+        "nome": "Preto e Branco",
+        "cores": [
+          {
+            "nome": "Preto",
+            "hex": "#161B22"
+          },
+          {
+            "nome": "Branco",
+            "hex": "#FFFFFF"
+          }
+        ],
+        "estoque": 1,
+        "imagem": null
+      }
+    ]
   }
 ]
