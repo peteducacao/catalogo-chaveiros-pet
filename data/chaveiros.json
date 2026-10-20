@@ -1,5 +1,28 @@
 [
   {
+    "id": "chaveiro-1792468399151",
+    "ordem": 1,
+    "nome": "Pedagogia",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [
+      {
+        "nome": "Azul PET",
+        "hex": "#0FABE2"
+      },
+      {
+        "nome": "Verde",
+        "hex": "#1DA88B"
+      }
+    ],
+    "mostrarCores": true,
+    "estoque": 5,
+    "preco": 3,
+    "disponivel": true,
+    "imagemIlustrativa": false,
+    "legendaImagem": "Imagem ilustrativa"
+  },
+  {
     "id": "foptic",
     "nome": "Chaveiro FOPTIC",
     "descricao": "Modelo demonstrativo FOPTIC.",
@@ -21,7 +44,7 @@
     "zoomImagem": 1.5,
     "preco": 3.5,
     "mostrarCores": false,
-    "ordem": 1
+    "ordem": 2
   },
   {
     "id": "chaveiro-1792354717559",
@@ -44,6 +67,6 @@
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
     "mostrarCores": false,
-    "ordem": 2
+    "ordem": 3
   }
 ]
