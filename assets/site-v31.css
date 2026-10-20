@@ -1298,3 +1298,32 @@ body>.site-footer{flex-shrink:0;margin-top:auto}
   .site-footer .footer-introduction{font-size:12.5px}
   .contact-map-caption{align-items:flex-start;flex-direction:column}
 }
+
+/* Contatos institucionais editáveis no painel */
+.contact-info-editor{max-width:950px!important;margin-bottom:21px!important}
+.contact-admin-fields{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:17px 16px;
+  margin:20px 0 21px;
+}
+.contact-admin-fields .field{min-width:0}
+.contact-admin-fields .field label{
+  display:block;margin:0 0 7px;
+  color:#173d72;font-weight:800;font-size:12px;
+}
+.contact-admin-fields .field input{
+  box-sizing:border-box;display:block;width:100%;min-width:0;
+  padding:12px 13px;border:1px solid #cbdedb;border-radius:11px;
+  background:#fff;color:#173d72;font:600 13px 'DM Sans',sans-serif;
+}
+.contact-admin-fields input:focus-visible{outline:3px solid #addfda;outline-offset:1px}
+.contact-admin-wide{grid-column:1/-1}
+#contact-info-feedback{display:block;min-height:18px;font-size:12px;margin-top:11px}
+#contact-info-feedback[data-kind="error"]{color:#b43c45}
+#contact-info-feedback[data-kind="success"]{color:#17775e}
+@media(max-width:650px){
+  .contact-admin-fields{grid-template-columns:1fr}
+  .contact-admin-wide{grid-column:auto}
+  .contact-info-editor .institutional-actions .btn{width:100%;justify-content:center}
+}
