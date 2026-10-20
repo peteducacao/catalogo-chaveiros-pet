@@ -15,7 +15,7 @@
       }
     ],
     "estoque": 1,
-    "disponivel": true,
+    "disponivel": false,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem ilustrativa",
     "zoomImagem": 1.5,
