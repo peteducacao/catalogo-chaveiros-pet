@@ -1,0 +1,710 @@
+'use strict';
+const PET_REPOSITORY='peteducacao/catalogo-chaveiros-pet';
+const PET_BRANCH='main';
+const PET_INSTAGRAM='https://www.instagram.com/pet.educacao/';
+const PET_DEFAULT_DESCRIPTION='Conheça nosso catálogo! Para mais informações, acompanhe o Instagram do PET Educação.';
+
+function node(tag,className,text){const e=document.createElement(tag);if(className)e.className=className;if(text!==undefined)e.textContent=String(text);return e;}
+// Nunca carregar formatos ativos (SVG externo/HTML) enviados por links de produtos.
+// Arquivos locais SVG pertencem exclusivamente aos assets estáticos do próprio site.
+function safeImageUrl(url){
+  const raw=String(url||'').trim();
+  if(/^assets\/[a-zA-Z0-9_./-]+\.(png|jpg|jpeg|webp|svg)$/i.test(raw)&&!raw.includes('..'))return raw;
+  if(raw.length>900||/[\s\x00-\x1f"'<>\\]/.test(raw))return 'assets/mock-pet.svg';
+  try{
+    const parsed=new URL(raw);
+    if(parsed.protocol!=='https:'||parsed.username||parsed.password||!parsed.hostname.includes('.'))return 'assets/mock-pet.svg';
+    if(!/\.(png|jpe?g|webp)$/i.test(parsed.pathname))return 'assets/mock-pet.svg';
+    return parsed.href;
+  }catch{return 'assets/mock-pet.svg';}
+}
+function safeHex(hex){return /^#[0-9a-f]{6}$/i.test(String(hex||''))?String(hex):'#ffffff';}
+function productAvailable(p){return Boolean(p.disponivel)&&Number(p.estoque)>0;}
+async function loadData(file){const response=await fetch(file+'?v=31&at='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('Arquivo indisponível: '+file);return response.json();}
+function makeColor(c){const item=node('span','color-option');const dot=node('span','dot');dot.style.backgroundColor=safeHex(c.hex);item.append(dot,document.createTextNode(c.nome||'Cor'));return item;}
+
+
+// A legenda abaixo da foto acompanha a cor real do fundo de cada imagem.
+// A amostragem usa pequenos pontos nas bordas inferiores, longe do chaveiro.
+// Imagens externas sem CORS continuam visíveis, com um fundo neutro de reserva.
+function harmonizeImageCaption(image,card){
+  if(!image.naturalWidth||!image.naturalHeight||!card?.style)return;
+  try{
+    const canvas=document.createElement('canvas');
+    const size=32;
+    canvas.width=size;canvas.height=size;
+    const context=canvas.getContext('2d',{willReadFrequently:true});
+    if(!context)return;
+    context.drawImage(image,0,0,size,size);
+    const pixels=context.getImageData(0,0,size,size).data;
+    const points=[
+      [1,26],[2,29],[3,31],[5,30],
+      [26,30],[28,31],[29,29],[30,26],
+      [1,19],[30,19]
+    ];
+    const samples=points.map(([x,y])=>{
+      const at=4*(y*size+x);
+      const alpha=pixels[at+3]/255;
+      // Combina transparência com o fundo base usado no cartão.
+      return [0,1,2].map((channel)=>
+        Math.round(pixels[at+channel]*alpha+[244,248,246][channel]*(1-alpha))
+      );
+    });
+    const median=channel=>{
+      const values=samples.map(p=>p[channel]).sort((a,b)=>a-b);
+      return Math.round((values[4]+values[5])/2);
+    };
+    const color=[median(0),median(1),median(2)];
+    // Não escurece, clareia, edita ou altera a fotografia.
+    card.style.setProperty('--product-image-background','rgb('+color.join(',')+')');
+    const luminosity=color.reduce((sum,v,i)=>sum+(v/255)*[.2126,.7152,.0722][i],0);
+    card.style.setProperty('--product-caption-ink',luminosity>.58?'#536a76':'#fff');
+  }catch(error){
+    // Canvas pode estar protegido por CORS quando a foto vem de um site externo.
+    // Nesse caso mantemos o fundo neutro; o carregamento da foto não é afetado.
+  }
+}
+
+
+function catalogVariantMode(product){
+  if((product?.tipoVariacao==='cor'||product?.tipoVariacao==='combinacao')&&Array.isArray(product.variacoes)&&product.variacoes.length)return product.tipoVariacao;
+  return 'nenhuma';
+}
+function catalogVariantStock(product,variant){
+  // Null ou ausência de número: usa o estoque geral, nunca equivale a zero.
+  return variant?.estoque===null||variant?.estoque===undefined||variant?.estoque===''?
+    Number(product.estoque):Number(variant.estoque);
+}
+function catalogVariantAvailable(product,variant){
+  return productAvailable(product)&&Number.isFinite(catalogVariantStock(product,variant))&&catalogVariantStock(product,variant)>0;
+}
+function catalogVariantName(variant){
+  const name=Array.isArray(variant?.cores)?variant.cores.map(c=>String(c.nome||'').trim()).filter(Boolean).join(' e '):'';
+  return name||String(variant?.nome||'Variação');
+}
+function makeProductCard(product){
+  // Disponibilidade da aba é exclusivamente a do PRODUTO, nunca de cada combinação.
+  const available=productAvailable(product);
+  const card=node('article','product-card'+(available?'':' sold-out'));
+  const visual=node('div','product-image'),image=node('img');
+  const originalPhoto=safeImageUrl(product.imagem);
+  let currentPhoto=originalPhoto;
+  image.alt='Imagem do '+(product.nome||'chaveiro');
+  image.src=originalPhoto;
+  image.loading='lazy';
+  const expand=node('button','product-image-viewer');
+  expand.type='button';
+  expand.setAttribute('aria-label','Ampliar foto do '+(product.nome||'chaveiro'));
+  expand.append(image);
+  const zoomHint=node('span','product-zoom-hint');
+  zoomHint.setAttribute('aria-hidden','true');
+  expand.append(zoomHint);
+  expand.addEventListener('click',()=>openProductImage({...product,imagem:currentPhoto}));
+  visual.append(expand);
+  const illustrativeCaption=product.imagemIlustrativa?node('div','product-image-caption'):null;
+  if(illustrativeCaption)illustrativeCaption.append(node('span','image-label',product.legendaImagem||'Imagem ilustrativa'));
+  const content=node('div','product-info');
+  content.append(node('h2','',product.nome||'Chaveiro'));
+  if(product.descricao)content.append(node('p','product-description',product.descricao));
+  const variationMode=catalogVariantMode(product);
+  if(variationMode==='nenhuma'&&available&&product.mostrarCores!==false&&product.cores?.length){
+    content.append(node('span','colors-label','Cores disponíveis'));
+    const list=node('div','color-list');
+    product.cores.forEach(c=>list.append(makeColor(c)));
+    content.append(list);
+  }
+  const priceValue=product.preco===null||product.preco===undefined||product.preco===''?null:Number(product.preco);
+  if(priceValue!==null&&Number.isFinite(priceValue)&&priceValue>0){
+    const formattedPrice=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(priceValue);
+    content.append(node('p','product-price',formattedPrice));
+  }
+  const stockRow=node('div','stock-row');
+  const badge=node('span','stock-badge '+(available?'available':'unavailable'),available?'● Disponível':'● Sem estoque');
+  stockRow.append(badge);
+  const social=node('a','product-link');
+  social.href=PET_INSTAGRAM;social.target='_blank';social.rel='noopener noreferrer';
+  social.append(document.createTextNode('Saiba mais no Instagram'),node('span','','↗'));
+  const disabled=node('span','product-link is-disabled','Indisponível no momento');
+  disabled.setAttribute('aria-disabled','true');
+  const actions=node('div','product-action');
+  function showAvailability(isAvailable,variant=false){
+    badge.className='stock-badge '+(isAvailable?'available':'unavailable');
+    badge.textContent=isAvailable?'● Disponível':variant?'● Indisponível nesta variação':'● Sem estoque';
+    actions.replaceChildren(isAvailable?social:disabled);
+    disabled.textContent=variant?'Esta variação está indisponível':'Indisponível no momento';
+  }
+  // Seleção de cores no próprio cartão: a FOTO é substituída no mesmo elemento.
+  if(available&&variationMode!=='nenhuma'){
+    const variations=product.variacoes.filter(v=>v&&Array.isArray(v.cores)&&v.cores.length===(variationMode==='cor'?1:2));
+    if(variations.length){
+      const block=node('div','product-variations');
+      const label=node('span','product-variations-label',variationMode==='cor'?'Escolha uma cor':'Escolha a combinação');
+      const choices=node('div','product-variation-options');
+      choices.setAttribute('role','group');
+      choices.setAttribute('aria-label',variationMode==='cor'?'Cores do '+product.nome:'Combinações de cores do '+product.nome);
+      const note=node('p','product-variation-note');
+      note.setAttribute('role','status');
+      note.setAttribute('aria-live','polite');
+      const photoNotice=node('p','product-variant-photo-note');
+      photoNotice.hidden=true;
+      const buttons=[];
+      function chooseVariant(index){
+        const variant=variations[index],isAvailable=catalogVariantAvailable(product,variant);
+        for(const [i,button] of buttons.entries()){
+          const selected=i===index;
+          button.classList.toggle('is-selected',selected);
+          button.setAttribute('aria-pressed',String(selected));
+        }
+        const url=variant.imagem?safeImageUrl(variant.imagem):originalPhoto;
+        const validOwnImage=Boolean(variant.imagem)&&url!=='assets/mock-pet.svg';
+        if(url!==currentPhoto){
+          currentPhoto=url;
+          image.style.opacity='.55';
+          image.onload=()=>{image.style.opacity='';};
+          image.onerror=()=>{image.style.opacity='';};
+          image.src=url;
+          image.alt='Foto do '+product.nome+' — '+catalogVariantName(variant);
+        }
+        photoNotice.hidden=validOwnImage;
+        photoNotice.textContent=validOwnImage?'':'Foto principal ilustrativa; a combinação selecionada pode ser diferente.';
+        note.textContent='Selecionado: '+catalogVariantName(variant)+(isAvailable?'':' — indisponível');
+        showAvailability(isAvailable,true);
+      }
+      for(const [i,variant] of variations.entries()){
+        const button=node('button','product-variation-option');
+        button.type='button';
+        button.setAttribute('aria-label',catalogVariantName(variant)+(catalogVariantAvailable(product,variant)?'':' — indisponível'));
+        button.setAttribute('aria-pressed','false');
+        const chips=node('span','product-variation-chips');
+        for(const color of variant.cores){
+          const dot=node('span','product-variation-dot');
+          dot.style.backgroundColor=safeHex(color.hex);
+          dot.setAttribute('aria-hidden','true');
+          chips.append(dot);
+        }
+        const name=node('span','product-variation-name',catalogVariantName(variant));
+        button.append(chips,name);
+        if(!catalogVariantAvailable(product,variant))button.append(node('span','product-variation-soldout','Esgotada'));
+        button.addEventListener('click',()=>chooseVariant(i));
+        buttons.push(button);
+        choices.append(button);
+      }
+      block.append(label,choices,note,photoNotice);
+      content.append(block);
+      // Inicialmente o cartão mostra a FOTO PRINCIPAL; a primeira opção não é selecionada automaticamente.
+      note.textContent='Selecione uma opção para conferir a disponibilidade.';
+      showAvailability(available,false);
+    }
+  }
+  content.append(stockRow);
+  if(variationMode==='nenhuma'||!available)showAvailability(available,false);
+  else if(!actions.hasChildNodes())showAvailability(available,false);
+  content.append(actions);
+  card.append(visual);
+  if(illustrativeCaption)card.append(illustrativeCaption);
+  card.append(content);
+  return card;
+}
+
+// Imagens da capa são selecionadas manualmente no painel; nunca há preenchimento automático.
+function renderHomeFeatured(config,products){
+  const gallery=document.getElementById('home-feature-gallery');
+  const hero=document.querySelector('.hero-featured');
+  if(!gallery||!hero)return;
+  const selected=Array.isArray(config.homeFeaturedIds)?config.homeFeaturedIds:[];
+  const ids=[...new Set(selected.filter(id=>typeof id==='string'))].slice(0,3);
+  const chosen=ids.map(id=>products.find(p=>p.id===id)).filter(p=>p&&productAvailable(p));
+  gallery.replaceChildren();
+  for(const product of chosen){
+    const link=node('a','home-feature-photo');
+    link.href='catalogo.html?ir=disponiveis';
+    link.setAttribute('aria-label','Ver '+String(product.nome||'chaveiro')+' no catálogo');
+    const image=node('img');
+    image.src=safeImageUrl(product.imagem);
+    image.alt='Foto do '+String(product.nome||'chaveiro');
+    image.loading='lazy';
+    image.decoding='async';
+    link.append(image);
+    gallery.append(link);
+  }
+  gallery.dataset.count=String(chosen.length);
+  gallery.hidden=chosen.length===0;
+  hero.classList.toggle('has-featured',chosen.length>0);
+  hero.classList.toggle('hero-centered',chosen.length===0);
+}
+async function initHomeText(){
+  const el=document.getElementById('home-description');
+  if(!el)return;
+  try{
+    const [config,products]=await Promise.all([loadData('data/config.json'),loadData('data/chaveiros.json')]);
+    if(typeof config.homeDescription==='string')el.textContent=config.homeDescription;
+    renderHomeFeatured(config,Array.isArray(products)?products:[]);
+  }catch(error){console.error('Destaques da capa:',error);}
+}
+// Visualização ampliada, preservando o arquivo original e o enquadramento completo.
+let photoDialog=null;
+function openProductImage(product){
+  if(!photoDialog){
+    photoDialog=node('dialog','product-lightbox');
+    const close=node('button','product-lightbox-close','Fechar ×');
+    close.type='button';
+    close.setAttribute('aria-label','Fechar fotografia ampliada');
+    close.addEventListener('click',()=>photoDialog.close());
+    const frame=node('div','product-lightbox-frame');
+    const big=node('img');
+    big.id='product-lightbox-image';
+    frame.append(big);
+    photoDialog.append(close,frame);
+    photoDialog.addEventListener('click',event=>{if(event.target===photoDialog)photoDialog.close();});
+    document.body.append(photoDialog);
+  }
+  const big=photoDialog.querySelector('img');
+  big.src=safeImageUrl(product.imagem);
+  big.alt='Fotografia ampliada de '+(product.nome||'chaveiro');
+  if(!photoDialog.open)photoDialog.showModal();
+}
+function orderCatalogProducts(list){
+  // A ordem explícita é a referência principal do catálogo, inclusive após
+  // gravações do painel e atualizações em cache do GitHub Pages.
+  return list.map((p,i)=>{
+    const position=Number(p?.ordem);
+    return {p,i,position:Number.isFinite(position)&&position>=1?position:i+1};
+  }).sort((a,b)=>a.position-b.position||a.i-b.i).map(item=>item.p);
+}
+// Busca global, inclusive em modelos sem estoque; normaliza acentos e não depende da página visível.
+const CATALOG_PAGE_SIZE=6;
+function normalizeCatalogSearch(value){
+  return String(value||'').toLocaleLowerCase('pt-BR')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ');
+}
+function filterCatalogProducts(products,query,stockFilter){
+  const normalized=normalizeCatalogSearch(query);
+  if(normalized){
+    const terms=normalized.split(' ');
+    return products.filter(product=>{
+      const searchable=normalizeCatalogSearch([product.nome,product.descricao].filter(Boolean).join(' '));
+      return terms.every(term=>searchable.includes(term));
+    });
+  }
+  return products.filter(product=>stockFilter==='sem-estoque'?!productAvailable(product):productAvailable(product));
+}
+function catalogPageSlice(results,page,size=CATALOG_PAGE_SIZE){
+  const totalPages=Math.max(1,Math.ceil(results.length/size));
+  const safePage=Math.max(1,Math.min(totalPages,Math.trunc(Number(page))||1));
+  return {page:safePage,totalPages,items:results.slice((safePage-1)*size,safePage*size)};
+}
+async function initCatalog(){
+  const grid=document.getElementById('catalog-grid');
+  if(!grid)return;
+  const [originalProducts,config]=await Promise.all([
+    loadData('data/chaveiros.json'),loadData('data/config.json').catch(()=>({}))
+  ]);
+  if(!Array.isArray(originalProducts))throw Error('Dados do catálogo inválidos');
+  const products=orderCatalogProducts(originalProducts);
+  const subtitle=document.getElementById('catalog-description');
+  if(subtitle)subtitle.textContent=typeof config.catalogDescription==='string'?config.catalogDescription:PET_DEFAULT_DESCRIPTION;
+  const available=products.filter(productAvailable).length;
+  const unavailable=products.length-available;
+  const countAvailable=document.getElementById('count-available');
+  const countUnavailable=document.getElementById('count-unavailable');
+  if(countAvailable)countAvailable.textContent='('+available+')';
+  if(countUnavailable)countUnavailable.textContent='('+unavailable+')';
+  const search=document.getElementById('buscar');
+  const empty=document.getElementById('catalog-empty');
+  const toolbar=document.getElementById('disponiveis');
+  const filterRow=toolbar?.querySelector('.filter-row');
+  const searchField=toolbar?.querySelector('.search-field');
+  const pagination=document.getElementById('catalog-pagination');
+  const paginationInfo=document.getElementById('catalog-page-info');
+  const introCaption=document.getElementById('catalog-section-subtitle');
+  const heading=document.getElementById('catalog-results-heading');
+  if(searchField)searchField.hidden=products.length<7;
+  let filter=available===0?'sem-estoque':'disponivel';
+  let page=1;
+  let observer=null;
+  const reduced=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches===true;
+  const supportsObserver='IntersectionObserver' in window;
+  function updateFilterButtons(){
+    document.querySelectorAll('[data-filter]').forEach(button=>{
+      const active=button.dataset.filter===filter;
+      button.classList.toggle('active',active);
+      button.setAttribute('aria-pressed',String(active));
+    });
+  }
+  function revealCards(cards){
+    observer?.disconnect();
+    observer=null;
+    if(reduced()||!supportsObserver){
+      cards.forEach(card=>card.classList.add('catalog-is-visible'));
+      return;
+    }
+    observer=new IntersectionObserver(entries=>{
+      for(const entry of entries){
+        if(entry.isIntersecting){
+          entry.target.classList.add('catalog-is-visible');
+          observer?.unobserve(entry.target);
+        }
+      }
+    },{rootMargin:'0px 0px -8% 0px',threshold:0.08});
+    cards.forEach((card,i)=>{
+      card.style.setProperty('--reveal-delay',String(Math.min(i%3,2)*75)+'ms');
+      card.classList.add('catalog-animate-pending');
+      observer.observe(card);
+    });
+  }
+  function scrollToResults(){
+    const section=heading||toolbar||grid;
+    if(!section)return;
+    window.requestAnimationFrame(()=>section.scrollIntoView({
+      behavior:reduced()?'auto':'smooth',block:'start'
+    }));
+  }
+  function renderPagination(totalPages,activePage){
+    if(!pagination)return;
+    pagination.replaceChildren();
+    const visible=totalPages>1;
+    pagination.hidden=!visible;
+    if(!visible)return;
+    const nav=node('nav','catalog-page-buttons');
+    nav.setAttribute('aria-label','Navegar pelas páginas de chaveiros');
+    const button=(label,value,disabled=false)=>{
+      const el=node('button','catalog-page-button',label);
+      el.type='button';
+      el.disabled=disabled;
+      el.dataset.page=String(value);
+      if(typeof value==='number'&&label===String(value)){
+        el.setAttribute('aria-label','Página '+value);
+        if(value===activePage){
+          el.classList.add('is-current');
+          el.setAttribute('aria-current','page');
+        }
+      }else el.setAttribute('aria-label',label==='‹'?'Página anterior':'Próxima página');
+      el.addEventListener('click',()=>{
+        page=value;
+        render();
+        const current=pagination.querySelector('[data-page="'+page+'"]');
+        current?.focus({preventScroll:true});
+        scrollToResults();
+      });
+      return el;
+    };
+    nav.append(button('‹',activePage-1,activePage===1));
+    const visiblePages=new Set([1,totalPages,activePage-1,activePage,activePage+1]);
+    let previous=0;
+    for(let i=1;i<=totalPages;i++){
+      if(!visiblePages.has(i))continue;
+      if(previous&&i-previous>1){
+        const ellipsis=node('span','catalog-page-ellipsis','…');
+        ellipsis.setAttribute('aria-hidden','true');
+        nav.append(ellipsis);
+      }
+      nav.append(button(String(i),i));
+      previous=i;
+    }
+    nav.append(button('›',activePage+1,activePage===totalPages));
+    pagination.append(nav);
+  }
+  function render(){
+    const query=normalizeCatalogSearch(search?.value||'');
+    // Durante a pesquisa, todos os modelos são considerados, independentemente do estoque.
+    // Os filtros continuam a funcionar normalmente quando a busca está vazia.
+    if(filterRow)filterRow.hidden=Boolean(query)||available===0||unavailable===0;
+    const matches=filterCatalogProducts(products,query,filter);
+    const result=catalogPageSlice(matches,page);
+    page=result.page;
+    const cards=result.items.map(makeProductCard);
+    grid.replaceChildren(...cards);
+    grid.dataset.visibleCount=String(Math.min(cards.length,3));
+    revealCards(cards);
+    renderPagination(result.totalPages,page);
+    if(paginationInfo){
+      // Não destacar a quantidade quando existem poucos modelos; indicador é útil em buscas/páginas.
+      paginationInfo.hidden=!query&&matches.length<=CATALOG_PAGE_SIZE;
+      if(matches.length===0)paginationInfo.textContent=query?'Nenhum resultado encontrado':'Nenhum modelo nesta seção';
+      else if(query)paginationInfo.textContent=matches.length+' '+(matches.length===1?'resultado encontrado':'resultados encontrados');
+      else paginationInfo.textContent=matches.length+' modelos nesta seção';
+    }
+    if(introCaption){
+      introCaption.textContent=query?'Resultados para “'+(search.value||'').trim()+'”':(filter==='sem-estoque'?'Modelos temporariamente indisponíveis':'Explore os modelos produzidos pelo PET Educação.');
+    }
+    if(empty){
+      empty.hidden=matches.length!==0;
+      if(!matches.length)empty.textContent=products.length===0
+        ?'Novos modelos em preparação. Acompanhe as novidades pelo Instagram do PET Educação.'
+        :query?'Nenhum chaveiro encontrado. Experimente outro nome ou termo.'
+        :filter==='disponivel'?'Não há chaveiros disponíveis no momento. Confira a seção Sem estoque.':'Nenhum chaveiro sem estoque.';
+    }
+  }
+  document.querySelectorAll('[data-filter]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      filter=button.dataset.filter;
+      page=1;
+      updateFilterButtons();
+      render();
+    });
+  });
+  search?.addEventListener('input',()=>{
+    page=1;
+    render();
+  });
+  updateFilterButtons();
+  render();
+  const target=document.getElementById('disponiveis');
+  function goToAvailable(){
+    filter=available===0?'sem-estoque':'disponivel';
+    page=1;
+    if(search)search.value='';
+    updateFilterButtons();
+    render();
+    if(target){
+      target.scrollIntoView({behavior:reduced()?'auto':'smooth',block:'start'});
+    }
+  }
+  if(new URLSearchParams(window.location.search).get('ir')==='disponiveis'){
+    window.requestAnimationFrame(()=>window.setTimeout(goToAvailable,120));
+  }
+  document.querySelectorAll('.main-nav a[data-page="catalogo"]').forEach(link=>{
+    link.addEventListener('click',event=>{
+      if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      event.preventDefault();
+      goToAvailable();
+      const menu=document.getElementById('main-nav');
+      menu?.classList.remove('open');
+      document.getElementById('menu-toggle')?.setAttribute('aria-expanded','false');
+    });
+  });
+}
+
+function safeSocialUrl(raw){
+  try{
+    const value=new URL(String(raw||'').trim());
+    if(value.protocol!=='https:'||value.username||value.password||!value.hostname.includes('.'))return null;
+    return value.href;
+  }catch{return null;}
+}
+// Apenas cores hexadecimais completas podem ser usadas como fundo de cartões.
+function safeCardBackground(value){
+  return /^#[0-9a-f]{6}$/i.test(String(value||''))?String(value):null;
+}
+// Escolhe automaticamente texto escuro ou claro conforme o contraste WCAG do fundo.
+function cardBackgroundText(hex){
+  const channels=[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);
+  const luminance=channels.map(c=>c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4))
+    .reduce((sum,c,i)=>sum+c*[0.2126,0.7152,0.0722][i],0);
+  const navyLum=[23,61,114].map(v=>v/255).map(c=>c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4))
+    .reduce((sum,c,i)=>sum+c*[0.2126,0.7152,0.0722][i],0);
+  const whiteContrast=1.05/(luminance+0.05);
+  const navyContrast=(Math.max(navyLum,luminance)+0.05)/(Math.min(navyLum,luminance)+0.05);
+  return whiteContrast>=navyContrast?'light':'dark';
+}
+function contactCard(item){
+  const url=safeSocialUrl(item.url);
+  if(!url)return null;
+  const instagram=(new URL(url).hostname.toLowerCase().endsWith('instagram.com'));
+  const card=node('a','instagram-card'+(instagram?' social-instagram':''));
+  const chosenBackground=safeCardBackground(item.corFundo);
+  if(chosenBackground){
+    card.classList.add('has-custom-bg');
+    card.style.setProperty('--social-bg-color',chosenBackground);
+    card.dataset.colorMode=cardBackgroundText(chosenBackground);
+  }
+  card.href=url;card.target='_blank';card.rel='noopener noreferrer';
+  const icon=node('div','instagram-icon');
+  const symbol=node('span','social-symbol',instagram?'◎':String(item.nome||'•').charAt(0).toLocaleUpperCase('pt-BR'));
+  icon.append(symbol);
+  const details=node('div');
+  const kicker=node('span','overline',String(item.nome||'REDE SOCIAL').toLocaleUpperCase('pt-BR'));
+  const heading=node('h2','',item.perfil||item.nome||'Perfil do PET');
+  const description=node('p','',item.descricao||'Acompanhe o PET Educação nesta rede social.');
+  details.append(kicker,heading,description);
+  card.append(icon,details,node('span','arrow-round','↗'));
+  return card;
+}
+
+function renderInstitutionalWebsite(site){
+  const card=document.getElementById('institutional-website');
+  if(!card)return;
+  const data=site&&typeof site==='object'?site:null;
+  if(!data)return;
+  const validUrl=safeSocialUrl(data.url);
+  if(data.visivel===false||!validUrl){
+    card.hidden=true;
+    return;
+  }
+  card.href=validUrl;
+  document.getElementById('institutional-public-title').textContent=String(data.titulo||'peteduca.com.br');
+  document.getElementById('institutional-public-description').textContent=String(data.descricao||'');
+  card.hidden=false;
+}
+
+const PET_CONTACT_DEFAULTS={
+  instituicao:'Universidade Federal de Sergipe — Campus Prof. Alberto Carvalho',
+  endereco:'Av. Vereador Olímpio Grande, s/n',
+  cidade:'Itabaiana/SE',
+  cep:'49506-036',
+  telefone:'(79) 3432-8217',
+  email:'petedusaber@gmail.com'
+};
+function institutionalContact(config){
+  const raw=config?.contatoInstitucional;
+  if(!raw||typeof raw!=='object'||Array.isArray(raw))return {...PET_CONTACT_DEFAULTS};
+  const clean={};
+  for(const [key,defaultValue] of Object.entries(PET_CONTACT_DEFAULTS)){
+    clean[key]=typeof raw[key]==='string'?raw[key].slice(0,250):defaultValue;
+  }
+  return clean;
+}
+function putContactText(id,value){
+  const el=document.getElementById(id);
+  if(el)el.textContent=value;
+}
+function socialFooterIcon(item){
+  const symbol=node('span','footer-link-icon',/instagram/i.test(String(item.nome||''))?'◎':'↗');
+  symbol.setAttribute('aria-hidden','true');
+  return symbol;
+}
+function renderPublicFooter(config){
+  const nav=document.getElementById('footer-social-links');
+  if(!nav)return;
+  const socials=Array.isArray(config?.redesSociais)?config.redesSociais:[];
+  nav.replaceChildren();
+  for(const social of socials){
+    const url=safeSocialUrl(social.url);
+    if(!url)continue;
+    const a=node('a','footer-social-link');
+    a.href=url;
+    a.target='_blank';
+    a.rel='noopener noreferrer';
+    a.append(socialFooterIcon(social),node('span','',String(social.nome||'Rede social')));
+    nav.append(a);
+  }
+  if(!nav.children.length)nav.append(node('span','footer-no-social','Redes sociais em atualização'));
+  const institutional=document.getElementById('footer-institutional-link');
+  if(institutional){
+    const data=config?.siteInstitucional;
+    const url=data?safeSocialUrl(data.url):null;
+    institutional.hidden=data?.visivel===false||!url;
+    if(url)institutional.href=url;
+  }
+  const info=institutionalContact(config);
+  putContactText('footer-campus',info.instituicao);
+  putContactText('footer-city',[info.cidade,info.cep?'CEP '+info.cep:''].filter(Boolean).join(' · '));
+  putContactText('footer-year',String(new Date().getFullYear()));
+}
+function setupInstitutionalContact(config){
+  const root=document.getElementById('contact-institutional-info');
+  if(!root)return;
+  const info=institutionalContact(config);
+  putContactText('contact-info-campus',info.instituicao);
+  putContactText('contact-info-address',[info.endereco,info.cidade,info.cep?'CEP '+info.cep:''].filter(Boolean).join(' · '));
+  const phone=document.getElementById('contact-info-phone');
+  if(phone){
+    phone.textContent=info.telefone||'Não informado';
+    const digits=String(info.telefone||'').replace(/\D/g,'');
+    if(digits.length>=10&&digits.length<=13)phone.href='tel:+'+(digits.startsWith('55')?digits:'55'+digits);
+    else phone.removeAttribute('href');
+  }
+  const email=document.getElementById('contact-info-email');
+  if(email){
+    email.textContent=info.email||'Não informado';
+    if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email))email.href='mailto:'+info.email;
+    else email.removeAttribute('href');
+  }
+  const address=[info.instituicao,info.endereco,info.cidade,info.cep].filter(Boolean).join(', ');
+  const query=encodeURIComponent(address);
+  const mapLink=document.getElementById('contact-map-open');
+  if(mapLink)mapLink.href='https://www.google.com/maps/search/?api=1&query='+query;
+  const button=document.getElementById('contact-map-load');
+  const iframe=document.getElementById('contact-map-frame');
+  button?.addEventListener('click',()=>{
+    if(!iframe)return;
+    iframe.src='https://www.google.com/maps?q='+query+'&output=embed';
+    iframe.hidden=false;
+    button.hidden=true;
+    const intro=document.getElementById('contact-map-intro');
+    if(intro)intro.hidden=true;
+  },{once:true});
+}
+async function initPublicDetails(){
+  if(!document.getElementById('footer-social-links')&&!document.getElementById('contact-institutional-info'))return;
+  try{
+    const config=await loadData('data/config.json');
+    renderPublicFooter(config);
+    setupInstitutionalContact(config);
+    const list=document.getElementById('social-links');
+    if(list){
+      renderInstitutionalWebsite(config.siteInstitucional);
+      const socials=Array.isArray(config.redesSociais)?config.redesSociais:[];
+      const cards=socials.map(contactCard).filter(Boolean);
+      if(cards.length)list.replaceChildren(...cards);
+      else list.replaceChildren(node('p','empty','Nenhuma rede social cadastrada no momento.'));
+    }
+  }catch(error){
+    console.error('Informações institucionais:',error);
+    const fallback={
+      contatoInstitucional:PET_CONTACT_DEFAULTS,
+      siteInstitucional:{url:'https://peteduca.com.br/',visivel:true},
+      redesSociais:[{nome:'Instagram',url:PET_INSTAGRAM}]
+    };
+    renderPublicFooter(fallback);
+    setupInstitutionalContact(fallback);
+  }
+}
+
+function initMenu(){
+  const btn=document.getElementById('menu-toggle'),nav=document.getElementById('main-nav');
+  btn?.addEventListener('click',()=>{
+    const open=nav.classList.toggle('open');
+    btn.setAttribute('aria-expanded',String(open));
+    btn.setAttribute('aria-label',open?'Fechar menu':'Abrir menu');
+  });
+  document.querySelectorAll('.main-nav a').forEach(a=>{if(a.dataset.page===document.body.dataset.page)a.setAttribute('aria-current','page');});
+}
+
+function initInstagramRedirect(){
+  let active=false;
+  document.addEventListener('click',event=>{
+    if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+    const link=event.target?.closest?.('a[href]');
+    if(!link)return;
+    let target;
+    try{target=new URL(link.href,window.location.href);}catch{return;}
+    // Somente o Instagram oficial do PET Educação; os demais links seguem normais.
+    if(target.origin!=='https://www.instagram.com'||!/^\/pet\.educacao\/?$/.test(target.pathname))return;
+    if(active){event.preventDefault();return;}
+    event.preventDefault();
+    active=true;
+    const overlay=node('div','instagram-redirect-overlay');
+    overlay.setAttribute('role','status');
+    overlay.setAttribute('aria-live','polite');
+    overlay.setAttribute('aria-label','Redirecionando para o Instagram do PET Educação');
+    const card=node('div','instagram-redirect-card');
+    const loader=node('span','instagram-redirect-spinner');
+    loader.setAttribute('aria-hidden','true');
+    const title=node('strong','instagram-redirect-heading','Redirecionando para o Instagram');
+    const description=node('p','instagram-redirect-description','Você será direcionado ao Instagram do PET Educação.');
+    card.append(loader,title,description);
+    overlay.append(card);
+    document.body.append(overlay);
+    document.body.classList.add('instagram-redirect-active');
+    window.setTimeout(()=>{window.location.assign(target.href);},1300);
+    // Se o navegador cancelar a navegação externa, não deixar o overlay preso.
+    window.setTimeout(()=>{
+      if(document.visibilityState==='visible'){
+        overlay.remove();
+        document.body.classList.remove('instagram-redirect-active');
+        active=false;
+      }
+    },9500);
+  });
+}
+
+initMenu();
+initInstagramRedirect();
+initHomeText();
+initPublicDetails();
+initCatalog().catch(err=>{
+  const grid=document.getElementById('catalog-grid');
+  if(grid)grid.replaceChildren(node('p','empty','Não foi possível carregar os chaveiros. Atualize a página para tentar novamente.'));
+  console.error('Catálogo:',err);
+});
