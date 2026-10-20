@@ -51,22 +51,8 @@
     "variacoes": []
   },
   {
-    "id": "chaveiro-1792468399151",
-    "ordem": 3,
-    "nome": "Pedagogia",
-    "descricao": "",
-    "imagem": "assets/sem-foto.svg",
-    "cores": [],
-    "mostrarCores": true,
-    "estoque": 5,
-    "preco": 3,
-    "disponivel": true,
-    "imagemIlustrativa": false,
-    "legendaImagem": "Imagem ilustrativa"
-  },
-  {
     "id": "chaveiro-1792469245602",
-    "ordem": 4,
+    "ordem": 3,
     "nome": "Monster",
     "descricao": "",
     "imagem": "assets/produtos/1000305098-29aa6a48-d7a0-4a7e-8c4c-a0b57d9b77dd.webp",
@@ -112,6 +98,20 @@
         "imagem": "assets/produtos/1000305100-c0a097b4-57e7-45bf-8950-07e36ca76d3f.webp"
       }
     ]
+  },
+  {
+    "id": "chaveiro-1792468399151",
+    "ordem": 4,
+    "nome": "Pedagogia",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [],
+    "mostrarCores": true,
+    "estoque": 5,
+    "preco": 3,
+    "disponivel": true,
+    "imagemIlustrativa": false,
+    "legendaImagem": "Imagem ilustrativa"
   },
   {
     "tipoVariacao": "nenhuma",
