@@ -186,5 +186,26 @@
     "disponivel": true,
     "imagemIlustrativa": true,
     "legendaImagem": "Imagem Ilustrativa"
+  },
+  {
+    "tipoVariacao": "nenhuma",
+    "variacoes": [],
+    "id": "chaveiro-1792491115003",
+    "ordem": 9,
+    "nome": "Chaveiro HarryPotter - Tipo 4",
+    "descricao": "",
+    "imagem": "assets/sem-foto.svg",
+    "cores": [
+      {
+        "nome": "Preto",
+        "hex": "#161B22"
+      }
+    ],
+    "mostrarCores": true,
+    "estoque": 0,
+    "preco": 5,
+    "disponivel": true,
+    "imagemIlustrativa": true,
+    "legendaImagem": "Imagem Ilustrativa"
   }
 ]
