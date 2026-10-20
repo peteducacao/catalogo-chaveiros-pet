@@ -361,6 +361,8 @@
     loginScreen.hidden=logged;
     dashboard.hidden=!logged;
     sessionInfo.hidden=!logged;
+    // O tutorial é exclusivo do painel autenticado, nunca da tela de login.
+    byId('help-open').hidden=!logged;
     // Garante que as seções se excluam mesmo se houver CSS antigo em cache.
     loginScreen.style.display=logged?'none':'';
     dashboard.style.display=logged?'':'none';
@@ -369,7 +371,10 @@
   }
   function logout(){
     try{sessionStorage.removeItem(ACTIVE_TAB);}catch(e){}
-    token=null;currentUser=null;byId('token-input').value='';showDashboard(false);closeEditor();
+    token=null;currentUser=null;byId('token-input').value='';
+    const guideDialog=byId('admin-guide-dialog');
+    if(guideDialog?.open)guideDialog.close();
+    showDashboard(false);closeEditor();
     showAuthTransition('Sessão encerrada','Você saiu do painel administrativo.');
   }
   loginForm.addEventListener('submit',async event=>{
