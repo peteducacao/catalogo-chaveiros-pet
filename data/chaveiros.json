@@ -120,14 +120,16 @@
     "ordem": 5,
     "nome": "Pedagogia",
     "descricao": "",
-    "imagem": "assets/sem-foto.svg",
+    "imagem": "assets/produtos/1000306853-ecfa5796-abf9-441b-bedb-5c2b4412140e.webp",
     "cores": [],
     "mostrarCores": true,
     "estoque": 5,
     "preco": 3,
     "disponivel": true,
     "imagemIlustrativa": false,
-    "legendaImagem": "Imagem ilustrativa"
+    "legendaImagem": "",
+    "tipoVariacao": "nenhuma",
+    "variacoes": []
   },
   {
     "tipoVariacao": "cor",
