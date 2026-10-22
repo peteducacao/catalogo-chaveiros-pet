@@ -224,8 +224,21 @@
     "legendaImagem": "Imagem Ilustrativa"
   },
   {
-    "tipoVariacao": "nenhuma",
-    "variacoes": [],
+    "tipoVariacao": "cor",
+    "variacoes": [
+      {
+        "id": "variacao-e9a0210d-1a73-42fd-9597-79e01f83e96f",
+        "nome": "Vermelho",
+        "cores": [
+          {
+            "nome": "Vermelho",
+            "hex": "#D65353"
+          }
+        ],
+        "estoque": null,
+        "imagem": null
+      }
+    ],
     "id": "chaveiro-1792663837977",
     "ordem": 10,
     "nome": "Nossa Senhora",
