@@ -242,7 +242,7 @@
       }
     ],
     "mostrarCores": true,
-    "estoque": 0,
+    "estoque": 1,
     "preco": 5,
     "disponivel": true,
     "imagemIlustrativa": false,
