@@ -254,11 +254,14 @@
         "hex": "#D65353"
       }
     ],
-    "mostrarCores": true,
+    "mostrarCores": false,
     "estoque": 1,
     "preco": 5,
     "disponivel": true,
     "imagemIlustrativa": false,
-    "legendaImagem": ""
+    "legendaImagem": "",
+    "colecao": "Religião",
+    "seloNovoInicio": "2026-10-23T17:11:12.695Z",
+    "seloNovoPermanente": false
   }
 ]
