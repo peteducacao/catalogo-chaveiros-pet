@@ -236,7 +236,11 @@
     "preco": 5,
     "disponivel": true,
     "imagemIlustrativa": true,
-    "legendaImagem": "Imagem Ilustrativa"
+    "legendaImagem": "Imagem Ilustrativa",
+    "colecao": "HarryPotter",
+    "seloNovoInicio": null,
+    "seloNovoDias": null,
+    "seloNovoPermanente": false
   },
   {
     "tipoVariacao": "cor",
