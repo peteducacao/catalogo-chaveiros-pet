@@ -86,7 +86,8 @@ function catalogVariantName(variant){
 function formatCatalogOrderDetails(product,variant){
   const clean=value=>String(value||'').replace(/\s+/g,' ').trim();
   const lines=[
-    'Olá! Tenho interesse em encomendar um chaveiro do PET Educação.',
+    'Olá! Gostaria de encomendar um chaveiro do PET Educação.',
+    '',
     'Modelo: '+clean(product.nome||'Chaveiro')
   ];
   if(variant){
@@ -94,8 +95,8 @@ function formatCatalogOrderDetails(product,variant){
   }
   const price=product.preco===null||product.preco===undefined||product.preco===''?null:Number(product.preco);
   if(price!==null&&Number.isFinite(price)&&price>0)
-    lines.push('Preço informado no catálogo: '+new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(price));
-  lines.push('Gostaria de saber como fazer o pedido.');
+    lines.push('Preço no catálogo: '+new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(price));
+  lines.push('', 'Poderiam me informar como realizar a encomenda?');
   return lines.join('\n');
 }
 async function copyCatalogOrderDetails(text){
