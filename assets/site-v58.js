@@ -342,17 +342,13 @@ function relatedCollectionKey(product){
   return normalizeCatalogSearch(explicit||(looksLikeSeries?inferred:''));
 }
 function productHasNewBadge(product){
-  if(!product?.seloNovoInicio)return false;
+  if(!catalogNewBadgeEnabled||!product?.seloNovoInicio)return false;
   const start=Date.parse(product.seloNovoInicio);
   if(!Number.isFinite(start)||start>Date.now()+60000)return false;
-  const valid=[0,1,3,7,15,30];
-  const days=product.seloNovoDias!==undefined&&product.seloNovoDias!==null&&valid.includes(Number(product.seloNovoDias))
-    ?Number(product.seloNovoDias)
-    :product.seloNovoPermanente===true?0:catalogFallbackNewDays;
+  const days=product.seloNovoDias!==undefined&&product.seloNovoDias!==null&&[0,1,3,7,15,30].includes(Number(product.seloNovoDias))?Number(product.seloNovoDias):product.seloNovoPermanente===true?0:catalogNewBadgeDays;
   return days===0||Date.now()-start<days*86400000;
 }
-// Fallback somente para antigos selos gravados antes da duração individual.
-let catalogFallbackNewDays=15;
+let catalogNewBadgeEnabled=false,catalogNewBadgeDays=15;
 function openProductImage(product){
   if(!photoDialog){
     photoDialog=node('dialog','product-lightbox');
@@ -446,7 +442,8 @@ async function initCatalog(){
   if(!Array.isArray(originalProducts))throw Error('Dados do catálogo inválidos');
   const products=orderCatalogProducts(originalProducts);
   catalogRelatedProducts=products;
-  catalogFallbackNewDays=[0,1,3,7,15,30].includes(Number(config.seloNovoDias))?Number(config.seloNovoDias):15;
+  catalogNewBadgeEnabled=true;
+  catalogNewBadgeDays=[0,1,3,7,15,30].includes(Number(config.seloNovoDias))?Number(config.seloNovoDias):15;
   const subtitle=document.getElementById('catalog-description');
   if(subtitle)subtitle.textContent=typeof config.catalogDescription==='string'?config.catalogDescription:PET_DEFAULT_DESCRIPTION;
   const available=products.filter(productAvailable).length;
