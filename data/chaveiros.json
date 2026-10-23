@@ -52,7 +52,11 @@
     "mostrarCores": false,
     "ordem": 2,
     "tipoVariacao": "nenhuma",
-    "variacoes": []
+    "variacoes": [],
+    "colecao": "Grupo de estudos",
+    "seloNovoInicio": null,
+    "seloNovoDias": null,
+    "seloNovoPermanente": false
   },
   {
     "id": "chaveiro-1792469245602",
