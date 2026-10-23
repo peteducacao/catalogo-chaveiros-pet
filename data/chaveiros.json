@@ -113,7 +113,10 @@
     "preco": 5,
     "disponivel": true,
     "imagemIlustrativa": true,
-    "legendaImagem": "Imagem Ilustrativa"
+    "legendaImagem": "Imagem Ilustrativa",
+    "colecao": "Religião",
+    "seloNovoInicio": null,
+    "seloNovoPermanente": false
   },
   {
     "id": "chaveiro-1792468399151",
