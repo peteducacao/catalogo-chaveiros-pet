@@ -161,12 +161,16 @@
         "hex": "#161B22"
       }
     ],
-    "mostrarCores": true,
+    "mostrarCores": false,
     "estoque": 1,
     "preco": 5,
     "disponivel": true,
     "imagemIlustrativa": true,
-    "legendaImagem": "Imagem Ilustrativa"
+    "legendaImagem": "Imagem Ilustrativa",
+    "colecao": "HarryPotter",
+    "seloNovoInicio": null,
+    "seloNovoDias": null,
+    "seloNovoPermanente": false
   },
   {
     "tipoVariacao": "nenhuma",
