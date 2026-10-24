@@ -2667,13 +2667,6 @@ body[data-page="catalogo"] .product-card .product-badge-stack .stock-badge{
   overflow-wrap:break-word;
   box-shadow:0 3px 10px rgba(18,70,80,.12);
 }
-body[data-page="catalogo"] .product-card .product-badge-stack .product-new-badge{
-  position:static!important;
-  inset:auto!important;
-  z-index:auto;
-  margin:0;
-  padding:6px 11px;
-}
 @media(max-width:700px){
   body[data-page="catalogo"] .product-card .product-image .product-badge-stack{
     top:9px;
@@ -2681,9 +2674,51 @@ body[data-page="catalogo"] .product-card .product-badge-stack .product-new-badge
     max-width:calc(100% - 59px);
     gap:5px;
   }
-  body[data-page="catalogo"] .product-card .product-badge-stack .stock-badge,
-  body[data-page="catalogo"] .product-card .product-badge-stack .product-new-badge{
+  body[data-page="catalogo"] .product-card .product-badge-stack .stock-badge{
     padding:5px 9px;
     font-size:10px;
+  }
+}
+
+
+/* v62 — "NOVO Nossa Senhora": selo discreto antes do nome, com título comum após vencer. */
+body[data-page="catalogo"] .product-card .product-name-line{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:flex-start;
+  gap:6px 8px;
+  min-width:0;
+}
+body[data-page="catalogo"] .product-card .product-name-text{
+  min-width:0;
+  overflow-wrap:anywhere;
+}
+body[data-page="catalogo"] .product-card .product-name-line .product-new-badge{
+  position:static!important;
+  inset:auto!important;
+  z-index:auto;
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  max-width:100%;
+  margin:0;
+  padding:4px 8px;
+  border:1px solid #b6dfd9;
+  border-radius:7px;
+  background:#e7f5f0;
+  color:#126b72;
+  box-shadow:none;
+  font:800 10px/1.2 'DM Sans',sans-serif;
+  letter-spacing:.055em;
+  white-space:nowrap;
+}
+@media(max-width:700px){
+  body[data-page="catalogo"] .product-card .product-name-line{gap:6px}
+  body[data-page="catalogo"] .product-card .product-name-line .product-new-badge{
+    padding:4px 7px;
+    font-size:9px;
   }
 }
