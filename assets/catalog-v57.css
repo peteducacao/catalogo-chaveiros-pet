@@ -2584,3 +2584,28 @@ body[data-page="catalogo"] .product-card .product-new-badge{
  .product-lightbox .catalog-related-item{min-height:80px;padding:5px;font-size:10px}
  .product-lightbox .catalog-related-item img{height:50px}
 }
+
+
+/* Ajuste responsivo da foto ampliada: permite ver os modelos relacionados no notebook. */
+body[data-page="catalogo"] .product-lightbox{
+  width:min(680px,calc(100vw - 30px));
+  max-height:88dvh;
+  overflow-y:auto;
+}
+body[data-page="catalogo"] .product-lightbox-frame{
+  max-height:min(48dvh,430px);
+  overflow:hidden;
+}
+body[data-page="catalogo"] .product-lightbox-frame img{
+  display:block;
+  max-height:min(48dvh,430px);
+}
+body[data-page="catalogo"] .product-lightbox .catalog-related{
+  margin-top:12px;
+  padding-top:12px;
+}
+@media(max-width:700px){
+  body[data-page="catalogo"] .product-lightbox{width:calc(100vw - 20px);max-height:90dvh;padding:12px}
+  body[data-page="catalogo"] .product-lightbox-frame,
+  body[data-page="catalogo"] .product-lightbox-frame img{max-height:min(53dvh,410px)}
+}
