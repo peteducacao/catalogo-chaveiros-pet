@@ -2609,3 +2609,25 @@ body[data-page="catalogo"] .product-lightbox .catalog-related{
   body[data-page="catalogo"] .product-lightbox-frame,
   body[data-page="catalogo"] .product-lightbox-frame img{max-height:min(53dvh,410px)}
 }
+
+
+/* Alinha "Saiba mais no Instagram" na mesma linha em cartões da mesma fileira.
+   Mantém a área de conteúdo flexível mesmo quando um modelo tem opções de cores. */
+@media(min-width:701px){
+  body[data-page="catalogo"] .product-card .product-info{
+    display:flex;
+    flex-direction:column;
+    flex:1 1 auto;
+  }
+  body[data-page="catalogo"] .product-card .product-action{
+    margin-top:auto!important;
+  }
+  body[data-page="catalogo"] .product-card .product-action .product-link{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    min-height:41px;
+    box-sizing:border-box;
+    line-height:1.35;
+  }
+}
