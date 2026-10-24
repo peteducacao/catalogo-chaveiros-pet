@@ -139,7 +139,6 @@ function makeProductCard(product){
   expand.append(zoomHint);
   expand.addEventListener('click',()=>openProductImage({...product,imagem:currentPhoto}));
   visual.append(expand);
-  if(productHasNewBadge(product))visual.append(node('span','product-new-badge','Novo'))
   const illustrativeCaption=product.imagemIlustrativa?node('div','product-image-caption'):null;
   if(illustrativeCaption)illustrativeCaption.append(node('span','image-label',product.legendaImagem||'Imagem ilustrativa'));
   const content=node('div','product-info');
@@ -160,6 +159,11 @@ function makeProductCard(product){
   const stockRow=node('div','stock-row');
   const badge=node('span','stock-badge '+(available?'available':'unavailable'),available?'● Disponível':'● Sem estoque');
   stockRow.append(badge);
+  // Situação do estoque e selo Novo ficam juntos sobre a foto, sempre alinhados.
+  const badgeStack=node('div','product-badge-stack');
+  badgeStack.append(stockRow);
+  if(productHasNewBadge(product))badgeStack.append(node('span','product-new-badge','Novo'));
+  visual.append(badgeStack);
   const social=node('a','product-link');
   social.href=PET_INSTAGRAM;social.target='_blank';social.rel='noopener noreferrer';
   social.append(document.createTextNode('Saiba mais no Instagram'),node('span','','↗'));
@@ -288,7 +292,6 @@ function makeProductCard(product){
       showAvailability(available,false);
     }
   }
-  content.append(stockRow);
   if(variationMode==='nenhuma'||!available)showAvailability(available,false);
   else if(!actions.hasChildNodes())showAvailability(available,false);
   content.append(actions);
