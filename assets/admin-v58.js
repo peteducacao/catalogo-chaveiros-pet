@@ -491,6 +491,7 @@
       button.tabIndex=active?0:-1;
     });
     byId('section-products').hidden=tab!=='products';
+    byId('product-quick-actions').hidden=tab!=='products';
     byId('section-home').hidden=tab!=='home';
     byId('section-contacts').hidden=tab!=='contacts';
   }
