@@ -2579,3 +2579,48 @@ body[data-page="catalogo"] .product-card .product-action .product-link{
     width:100%!important;
   }
 }
+
+
+/* v60 — controles de administração ocupam o espaço do menu público no cabeçalho. */
+body[data-page="painel"] .site-header .admin-top-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-left:auto;
+  width:auto;
+  min-width:0;
+}
+body[data-page="painel"] .site-header .session-info{
+  width:auto;
+  justify-content:flex-end;
+}
+body[data-page="painel"].admin-authenticated .site-header #main-nav,
+body[data-page="painel"].admin-authenticated .site-header #menu-toggle{
+  display:none!important;
+}
+body[data-page="painel"] .admin-heading{
+  justify-content:center;
+}
+@media(max-width:700px){
+  body[data-page="painel"].admin-authenticated .site-header .header-inner{
+    flex-wrap:wrap;
+    gap:8px 12px;
+    padding-top:8px;
+    padding-bottom:10px;
+  }
+  body[data-page="painel"] .site-header .admin-top-actions{
+    width:100%;
+    margin-left:0;
+    justify-content:center;
+    gap:7px;
+  }
+  body[data-page="painel"] .site-header .admin-top-actions .session-info{
+    gap:7px!important;
+  }
+  body[data-page="painel"] .site-header .admin-help-button,
+  body[data-page="painel"] .site-header .admin-logout-button{
+    padding:9px 11px;
+  }
+}
