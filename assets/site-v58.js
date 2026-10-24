@@ -142,7 +142,10 @@ function makeProductCard(product){
   const illustrativeCaption=product.imagemIlustrativa?node('div','product-image-caption'):null;
   if(illustrativeCaption)illustrativeCaption.append(node('span','image-label',product.legendaImagem||'Imagem ilustrativa'));
   const content=node('div','product-info');
-  content.append(node('h2','',product.nome||'Chaveiro'));
+  const title=node('h2','product-name-line');
+  if(productHasNewBadge(product))title.append(node('span','product-new-badge','NOVO'));
+  title.append(node('span','product-name-text',product.nome||'Chaveiro'));
+  content.append(title);
   if(product.descricao)content.append(node('p','product-description',product.descricao));
   const variationMode=catalogVariantMode(product);
   if(variationMode==='nenhuma'&&available&&product.mostrarCores!==false&&product.cores?.length){
@@ -159,10 +162,9 @@ function makeProductCard(product){
   const stockRow=node('div','stock-row');
   const badge=node('span','stock-badge '+(available?'available':'unavailable'),available?'● Disponível':'● Sem estoque');
   stockRow.append(badge);
-  // Situação do estoque e selo Novo ficam juntos sobre a foto, sempre alinhados.
+  // Disponibilidade permanece fixa na fotografia. O selo NOVO acompanha o título.
   const badgeStack=node('div','product-badge-stack');
   badgeStack.append(stockRow);
-  if(productHasNewBadge(product))badgeStack.append(node('span','product-new-badge','Novo'));
   visual.append(badgeStack);
   const social=node('a','product-link');
   social.href=PET_INSTAGRAM;social.target='_blank';social.rel='noopener noreferrer';
