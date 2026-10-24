@@ -142,9 +142,13 @@ function makeProductCard(product){
   const illustrativeCaption=product.imagemIlustrativa?node('div','product-image-caption'):null;
   if(illustrativeCaption)illustrativeCaption.append(node('span','image-label',product.legendaImagem||'Imagem ilustrativa'));
   const content=node('div','product-info');
-  const title=node('h2','product-name-line');
-  if(productHasNewBadge(product))title.append(node('span','product-new-badge','NOVO'));
-  title.append(node('span','product-name-text',product.nome||'Chaveiro'));
+  const isNew=productHasNewBadge(product);
+  // Após o vencimento do selo, restaura exatamente o título normal, sem espaço reservado.
+  const title=node('h2',isNew?'product-name-line':'');
+  if(isNew){
+    title.append(node('span','product-new-badge','NOVO'));
+    title.append(node('span','product-name-text',product.nome||'Chaveiro'));
+  }else title.textContent=product.nome||'Chaveiro';
   content.append(title);
   if(product.descricao)content.append(node('p','product-description',product.descricao));
   const variationMode=catalogVariantMode(product);
