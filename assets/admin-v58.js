@@ -406,6 +406,13 @@
   function showDashboard(logged){
     loginScreen.hidden=logged;
     dashboard.hidden=!logged;
+    document.body.classList.toggle('admin-authenticated',logged);
+    const headerActions=document.querySelector('.site-header .admin-top-actions');
+    if(headerActions)headerActions.hidden=!logged;
+    if(logged){
+      byId('main-nav')?.classList.remove('open');
+      byId('menu-toggle')?.setAttribute('aria-expanded','false');
+    }
     sessionInfo.hidden=!logged;
     // O tutorial é exclusivo do painel autenticado, nunca da tela de login.
     byId('help-open').hidden=!logged;
