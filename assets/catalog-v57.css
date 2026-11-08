@@ -2793,3 +2793,48 @@ body[data-page="catalogo"] .product-card .product-info{
   body[data-page="catalogo"] .product-card .product-meta-row .product-variation-count{display:none}
   body[data-page="catalogo"] .product-card .product-meta-row .product-variations{flex:0 1 175px}
 }
+
+
+/* v63: cards compactos e padronizados, inclusive os sem variações.
+   Preço e seletor compartilham uma linha; botão e Instagram permanecem alinhados
+   entre produtos na mesma fileira, sem espaços em branco desproporcionais. */
+body[data-page="catalogo"] .product-card .product-meta-row{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  flex-wrap:wrap;gap:8px 10px;min-height:43px;
+  width:100%;min-width:0;box-sizing:border-box;
+}
+body[data-page="catalogo"] .product-card .product-meta-row:empty{display:none}
+body[data-page="catalogo"] .product-card .product-meta-row>.product-price{
+  flex:0 0 auto;align-self:center;margin:0!important;
+  line-height:1.4!important;min-height:28px;max-width:100%;
+}
+body[data-page="catalogo"] .product-card .product-meta-row>.product-variations{
+  flex:1 1 160px;min-width:150px;max-width:100%;
+  margin:0!important;padding:0!important;align-self:flex-start;
+}
+body[data-page="catalogo"] .product-card .product-meta-row .product-variation-disclosure{
+  width:100%;min-width:0;box-sizing:border-box;
+}
+body[data-page="catalogo"] .product-card .product-meta-row .product-variation-toggle{
+  min-height:43px;box-sizing:border-box;padding:9px 10px!important;
+  font-size:11px;line-height:1.3;gap:6px;
+}
+body[data-page="catalogo"] .product-card .product-meta-row:has(.product-variation-disclosure[open])>.product-variations{
+  flex-basis:100%;min-width:0;
+}
+body[data-page="catalogo"] .product-card .product-info{
+  gap:7px!important;min-width:0;
+}
+body[data-page="catalogo"] .product-card .product-info>.product-action{
+  margin-top:auto!important;padding-top:5px;
+}
+body[data-page="catalogo"] .product-card .product-action .product-link{
+  min-height:41px;box-sizing:border-box;
+}
+@media(max-width:700px){
+  body[data-page="catalogo"] .product-card .product-meta-row{gap:7px 9px;min-height:42px}
+  body[data-page="catalogo"] .product-card .product-meta-row .product-variation-toggle{
+    min-height:42px;padding:8px 10px!important;
+  }
+  body[data-page="catalogo"] .product-card .product-info>.product-action{margin-top:auto!important}
+}
