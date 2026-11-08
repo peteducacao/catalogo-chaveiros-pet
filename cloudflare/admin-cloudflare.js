@@ -449,7 +449,7 @@
   guide?.addEventListener('click',event=>{if(event.target===guide)guide.close();});
 
     function switchTab(tab){
-    if(!['products','home','contacts'].includes(tab))return;
+    if(!['products','contacts'].includes(tab))return;
     document.querySelectorAll('.dash-tab').forEach(button=>{
       const active=button.dataset.tab===tab;
       button.classList.toggle('active',active);
@@ -458,7 +458,6 @@
     });
     byId('section-products').hidden=tab!=='products';
     byId('product-quick-actions').hidden=tab!=='products';
-    byId('section-home').hidden=tab!=='home';
     byId('section-contacts').hidden=tab!=='contacts';
   }
   document.querySelectorAll('.dash-tab').forEach(button=>button.addEventListener('click',()=>switchTab(button.dataset.tab)));
@@ -484,33 +483,7 @@
     products=desiredOrderIds?arrangeByIds(remote,desiredOrderIds):orderProducts(remote);
   }
 
-  function render(){byId('stat-total').textContent=products.length;byId('stat-available').textContent=products.filter(productAvailable).length;byId('stat-off').textContent=products.filter(p=>!productAvailable(p)).length;const units=byId('stat-units');if(units)units.textContent=products.filter(productAvailable).reduce((sum,p)=>sum+(Number(p.estoque)||0),0)+' unidades em estoque';byId('config-home-description').value=typeof config.homeDescription==='string'?config.homeDescription:'Conheça nosso catálogo! Para mais informações, acompanhe o Instagram do PET Educação.';renderProducts();renderCollectionOptions();renderSocialList();renderInstitutionalWebsite();renderContactInformation();}
-
-  // A página inicial não exibe mais fotografias; somente o texto é configurável.
-  byId('save-home').addEventListener('click',async()=>{
-    const button=byId('save-home');
-    const feedback=byId('home-feedback');
-    const description=byId('config-home-description').value.trim();
-    button.disabled=true;
-    feedback.textContent='Salvando apresentação no catálogo...';
-    feedback.dataset.kind='pending';
-    try{
-      const sha=await updateConfigGitHub('Atualiza texto da página inicial',current=>{
-        current.homeDescription=description;
-        delete current.homeFeaturedIds;
-        return current;
-      });
-      feedback.dataset.kind='success';
-      feedback.textContent=sha?'Apresentação salva no catálogo!':'A apresentação já estava atualizada.';
-      if(sha)saveFeedback('success','Texto da página inicial salvo no catálogo!',sha);
-      toast(sha?'Apresentação atualizada no catálogo!':'Nenhuma mudança detectada.');
-    }catch(error){
-      feedback.dataset.kind='error';
-      feedback.textContent='Não foi possível salvar: '+error.message;
-      saveFeedback('error','Não foi possível salvar a apresentação: '+error.message);
-      toast('Erro ao salvar a apresentação: '+error.message,true);
-    }finally{button.disabled=false;}
-  });
+  function render(){byId('stat-total').textContent=products.length;byId('stat-available').textContent=products.filter(productAvailable).length;byId('stat-off').textContent=products.filter(p=>!productAvailable(p)).length;const units=byId('stat-units');if(units)units.textContent=products.filter(productAvailable).reduce((sum,p)=>sum+(Number(p.estoque)||0),0)+' unidades em estoque';renderProducts();renderCollectionOptions();renderSocialList();renderInstitutionalWebsite();renderContactInformation();}
 
   // Resumo na lista: cores comuns e combinações são fontes de dados diferentes.
   function productColorSummary(product){
