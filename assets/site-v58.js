@@ -159,10 +159,14 @@ function makeProductCard(product){
     product.cores.forEach(c=>list.append(makeColor(c)));
     content.append(list);
   }
+  // Preço e seletor de cores compartilham a mesma faixa compacta.
+  // Sem variação, a faixa mantém a altura dos outros cartões da fileira.
+  const metaRow=node('div','product-meta-row');
+  content.append(metaRow);
   const priceValue=product.preco===null||product.preco===undefined||product.preco===''?null:Number(product.preco);
   if(priceValue!==null&&Number.isFinite(priceValue)&&priceValue>0){
     const formattedPrice=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(priceValue);
-    content.append(node('p','product-price',formattedPrice));
+    metaRow.append(node('p','product-price',formattedPrice));
   }
   const stockRow=node('div','stock-row');
   const badge=node('span','stock-badge '+(available?'available':'unavailable'),available?'● Disponível':'● Sem estoque');
@@ -293,7 +297,7 @@ function makeProductCard(product){
       panel.append(label,choices,note,photoNotice);
       disclosure.append(panel);
       block.append(disclosure);
-      content.append(block);
+      metaRow.append(block);
       // Inicialmente o cartão mostra a FOTO PRINCIPAL; a primeira opção não é selecionada automaticamente.
       note.textContent='Selecione uma opção para conferir a disponibilidade.';
       showAvailability(available,false);
