@@ -180,3 +180,154 @@ body[data-page="painel"].cg-dashboard-ready .editor-modal .modal-footer{backgrou
 .cg-analytics-disclaimer{margin:0;font-size:11px;color:#728595;line-height:1.7}
 @media(max-width:1100px){.cg-analytics-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.cg-analytics-grid{grid-template-columns:1fr}}
 @media(max-width:650px){.cg-analytics-controls{flex-direction:column;align-items:stretch}.cg-analytics-filter{justify-content:space-between}.cg-analytic-card{padding:14px}.cg-analytic-card strong{font-size:26px}.cg-analytic-card span{font-size:10px;min-height:30px}}
+
+
+/* v3 • Formulário estável — corrige campos sobrepostos e seletor Coleção esticado.
+   O layout antigo misturava flex-direction:column e flex-basis:180px, criando
+   alturas artificiais nas duas caixas do estoque. Grid evita essa interferência. */
+body[data-page="painel"] .editor-modal .modal-body>.stock-box{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  grid-auto-rows:auto!important;
+  align-items:start!important;
+  align-content:start!important;
+  gap:14px 18px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:17px!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+  overflow:visible!important;
+  box-sizing:border-box;
+}
+body[data-page="painel"] .editor-modal .stock-box>.field{
+  display:block!important;
+  flex:none!important;
+  align-self:start!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-height:none!important;
+  height:auto!important;
+  margin:0!important;
+}
+body[data-page="painel"] .editor-modal .stock-box>.field label{
+  display:block!important;
+  height:auto!important;
+  margin:0 0 8px!important;
+  line-height:1.45!important;
+}
+body[data-page="painel"] .editor-modal .stock-box>.field input{
+  display:block;
+  width:100%!important;
+  min-width:0!important;
+  height:46px!important;
+  min-height:46px!important;
+  box-sizing:border-box;
+}
+body[data-page="painel"] .editor-modal .stock-box>.field .input-hint{
+  position:static!important;
+  display:block;
+  margin:7px 0 0!important;
+  line-height:1.45;
+}
+body[data-page="painel"] .editor-modal .stock-box>.toggle-field{
+  grid-column:1/-1!important;
+  display:inline-flex!important;
+  justify-self:start;
+  width:max-content!important;
+  min-height:32px;
+  height:auto!important;
+  flex:none!important;
+  margin:0!important;
+  position:relative;
+}
+body[data-page="painel"] .editor-modal .modal-body>.illustrative-field{
+  display:block!important;
+  flex:0 0 auto!important;
+  position:static!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  clear:both;
+  box-sizing:border-box;
+}
+body[data-page="painel"] .editor-modal #caption-field{
+  position:static!important;
+  display:block!important;
+  width:100%!important;
+  min-height:0!important;
+  height:auto!important;
+  margin:0!important;
+}
+body[data-page="painel"] .editor-modal #caption-field>label{
+  display:block!important;
+  position:static!important;
+  height:auto!important;
+  margin:0 0 8px!important;
+  line-height:1.45!important;
+}
+body[data-page="painel"] .editor-modal #product-caption{
+  display:block;
+  width:100%!important;
+  height:46px!important;
+  min-height:46px!important;
+  box-sizing:border-box;
+}
+body[data-page="painel"] .editor-modal #caption-field>.input-hint{
+  position:static!important;
+  display:block;
+  margin:8px 0 0!important;
+  line-height:1.55;
+}
+/* Coleções: tamanho de seletor previsível, nunca uma caixa de 175px de altura. */
+body[data-page="painel"] .editor-modal .collection-picker-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:10px!important;
+  width:100%;
+  margin:0!important;
+}
+body[data-page="painel"] .editor-modal #product-collection{
+  display:block!important;
+  box-sizing:border-box!important;
+  flex:none!important;
+  align-self:center!important;
+  width:100%!important;
+  height:46px!important;
+  min-height:46px!important;
+  max-height:46px!important;
+  padding:0 12px!important;
+  line-height:1.3!important;
+}
+body[data-page="painel"] .editor-modal #manage-collections-from-editor{
+  box-sizing:border-box;
+  min-height:46px!important;
+  height:auto;
+  max-width:220px;
+  margin:0;
+}
+@media(max-width:650px){
+  body[data-page="painel"] .editor-modal .modal-body>.stock-box{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:12px!important;
+    padding:14px!important;
+  }
+  body[data-page="painel"] .editor-modal .stock-box>.toggle-field{grid-column:1!important}
+  body[data-page="painel"] .editor-modal .collection-picker-row{
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:9px!important;
+  }
+  body[data-page="painel"] .editor-modal #manage-collections-from-editor{
+    max-width:none;
+    width:100%;
+    min-height:42px!important;
+    padding:9px 12px;
+  }
+}
