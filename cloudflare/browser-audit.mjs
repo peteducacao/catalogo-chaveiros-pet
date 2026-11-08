@@ -120,6 +120,22 @@ async function usePublic(width,height){
       html:document.documentElement.scrollWidth,viewport:window.innerWidth
     }));
     check(overflow.html<=overflow.viewport+4,'Catálogo com rolagem horizontal '+label+' '+JSON.stringify(overflow));
+    check(await page.locator('.product-copy-button').count()===0,
+      'O botão Copiar detalhes ainda aparece em '+label);
+    const regular=page.locator('.product-card:not(.sold-out):not(:has(.product-variation-toggle))').first();
+    if(await regular.count()){
+      check(await regular.locator('a.product-link').isVisible(),
+        'Chaveiro sem variações precisa mostrar Instagram diretamente em '+label);
+    }
+    const withVariants=page.locator('.product-card:has(.product-variation-toggle)').first();
+    if(await withVariants.count()){
+      check(await withVariants.locator('.product-variations').count()===1,
+        'Seletor de cores não está no rodapé do card em '+label);
+      check(await withVariants.locator('.product-variations').evaluate(el=>el.parentElement.classList.contains('product-action')),
+        'Seletor precisa ocupar o lugar do Instagram em '+label);
+      check(await withVariants.locator('a.product-link').count()===0,
+        'Instagram apareceu antes de escolher cor em '+label);
+    }
     const priceAndColor=page.locator('.product-card:has(.product-variation-toggle):has(.product-price)').first();
     if(await priceAndColor.count()){
       const rect=await priceAndColor.evaluate(el=>{
@@ -132,6 +148,21 @@ async function usePublic(width,height){
       check(rect.colors.width>=rect.card.width*.68,'Seletor de cores apertado '+label+': '+JSON.stringify(rect));
       await priceAndColor.locator('.product-variation-toggle').click();
       check(await priceAndColor.locator('.product-variation-panel').isVisible(),'As opções de cores não abrem');
+      const availableChoice=priceAndColor.locator('.product-variation-option:not(:has(.product-variation-soldout))').first();
+      if(await availableChoice.count()){
+        await availableChoice.click();
+        check(await priceAndColor.locator('a.product-link').isVisible(),
+          'Instagram não apareceu depois de selecionar cor disponível em '+label);
+        check(!(await priceAndColor.locator('.product-variation-disclosure').evaluate(el=>el.open)),
+          'Seletor de cores deveria recolher após a escolha em '+label);
+        check(await priceAndColor.locator('.product-variation-toggle').isVisible(),
+          'Seletor desapareceu após selecionar a cor em '+label);
+      }else{
+        const unavailableChoice=priceAndColor.locator('.product-variation-option').first();
+        await unavailableChoice.click();
+        check(await priceAndColor.locator('a.product-link').count()===0,
+          'Instagram não pode aparecer para variação esgotada em '+label);
+      }
     }
     await page.locator('#buscar').fill('buscar-um-modelo-inexistente-xyz');
     await page.locator('#catalog-empty').waitFor({state:'visible'});
