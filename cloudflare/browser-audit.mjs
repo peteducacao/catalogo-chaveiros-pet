@@ -118,6 +118,45 @@ async function usePublic(width,height){
     await page.locator('#catalog-grid .product-card').first().waitFor({state:'visible',timeout:25000});
     const cards=await page.locator('#catalog-grid .product-card').count();
     check(cards>=1,'Nenhum chaveiro renderizado no catálogo público');
+    // Verifica o novo layout em Chrome de verdade, sem depender somente de CSS no código.
+    check(await page.locator('link[href*="catalog-modern-v70.css"]').count()===1,
+      'Novo tema visual não está conectado ao catálogo em '+label);
+    const layout=await page.locator('#catalog-grid').evaluate(el=>{
+      const gridStyle=getComputedStyle(el);
+      const first=el.querySelector('.product-card');
+      const photo=first?.querySelector('.product-image');
+      const action=first?.querySelector('.product-action');
+      const cardStyle=first?getComputedStyle(first):null;
+      return {
+        columns:gridStyle.gridTemplateColumns.split(' ').filter(Boolean).length,
+        imageHeight:photo?.getBoundingClientRect().height||0,
+        radius:Number.parseFloat(cardStyle?.borderTopLeftRadius||'0'),
+        actionVisible:!!action&&action.getBoundingClientRect().height>=35,
+        cardWidth:first?.getBoundingClientRect().width||0,
+      };
+    });
+    const expectedColumns=width>1050?3:width>760?2:width>=570?2:1;
+    check(layout.columns===expectedColumns,
+      'Grade responsiva incorreta em '+label+': '+JSON.stringify(layout));
+    check(layout.imageHeight>=180&&layout.imageHeight<=320,
+      'Fotografia mal dimensionada em '+label+': '+JSON.stringify(layout));
+    check(layout.radius>=15&&layout.actionVisible,
+      'Cartão ou ação fora do tema renovado em '+label+': '+JSON.stringify(layout));
+    const align=await page.locator('#catalog-grid .product-card').evaluateAll(cards=>{
+      const rows=new Map();
+      for(const card of cards){
+        const top=Math.round(card.getBoundingClientRect().top);
+        const action=card.querySelector('.product-action')?.getBoundingClientRect();
+        if(!action)continue;
+        if(!rows.has(top))rows.set(top,[]);
+        rows.get(top).push(action.top);
+      }
+      return [...rows.values()].filter(values=>values.length>1)
+        .map(values=>Math.max(...values)-Math.min(...values));
+    });
+    check(align.every(delta=>delta<=8),
+      'Rodapés de cartões da mesma fileira desalinhados em '+label+': '+JSON.stringify(align));
+
     check(await page.locator('.product-card .product-description').count()===0,'Descrição antiga ainda aparece no card '+label);
     const overflow=await page.evaluate(()=>({
       html:document.documentElement.scrollWidth,viewport:window.innerWidth
