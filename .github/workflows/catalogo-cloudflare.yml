@@ -71,20 +71,8 @@ jobs:
         env:
           CATALOG_GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN }}
         run: printf '%s' "$CATALOG_GITHUB_TOKEN" | npx wrangler secret put CATALOG_GITHUB_TOKEN --config wrangler.catalogo.jsonc
-      - name: Validar endpoint público sem expor dados administrativos
+      - name: Validar publicação, senha e produtos reais sem alterações no banco
         env:
           CATALOG_WORKER_URL: ${{ vars.CATALOG_WORKER_URL || 'https://catalogo-chaveiros-pet.pet-educacao.workers.dev' }}
-        run: |
-          node --input-type=module <<'NODE'
-          const base=process.env.CATALOG_WORKER_URL;
-          const result=await fetch(base+'/api/health',{headers:{'cache-control':'no-cache'}});
-          if(!result.ok)throw Error('API de catálogo indisponível: HTTP '+result.status);
-          const data=await result.json();
-          if(data.service!=='Catálogo PET'||data.documents!==2||!data.ok)
-            throw Error('Banco inicial do catálogo não foi confirmado.');
-          const page=await fetch(base+'/painel.html');
-          if(!page.ok)throw Error('Painel não publicado: HTTP '+page.status);
-          const denied=await fetch(base+'/api/admin/doc/products');
-          if(denied.status!==401)throw Error('Rota administrativa sem proteção adequada.');
-          console.log('Catálogo novo publicado e protegido. Inventário PET não foi modificado.');
-          NODE
+          CATALOG_ADMIN_PASSWORD: ${{ secrets.CATALOG_ADMIN_PASSWORD }}
+        run: node cloudflare/live-smoke.mjs
