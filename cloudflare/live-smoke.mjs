@@ -48,6 +48,7 @@ const configDoc=await c.json();
 const products=JSON.parse(Buffer.from(productDoc.content,'base64').toString('utf8'));
 const config=JSON.parse(Buffer.from(configDoc.content,'base64').toString('utf8'));
 assert.ok(Array.isArray(products)&&products.length>=1,'Produtos devem ter sido preservados');
+assert.ok(products.every(item=>!Object.hasOwn(item,'descricao')),'Descrições antigas dos chaveiros devem ter sido retiradas sem mudar os demais dados');
 assert.ok(config&&typeof config==='object'&&!Array.isArray(config));
 const publicData=await fetch(base+'/api/data/chaveiros.json',{
   cache:'no-store',headers:{Origin:'https://peteducacao.github.io'}
