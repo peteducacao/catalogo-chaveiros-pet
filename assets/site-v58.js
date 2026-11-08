@@ -82,44 +82,6 @@ function catalogVariantName(variant){
   const name=Array.isArray(variant?.cores)?variant.cores.map(c=>String(c.nome||'').trim()).filter(Boolean).join(' e '):'';
   return name||String(variant?.nome||'Variação');
 }
-// Prepara texto para copiar, sem enviar mensagens ou armazenar dados do visitante.
-function formatCatalogOrderDetails(product,variant){
-  const clean=value=>String(value||'').replace(/\s+/g,' ').trim();
-  const lines=[
-    'Olá! Gostaria de encomendar um chaveiro do PET Educação.',
-    '',
-    'Modelo: '+clean(product.nome||'Chaveiro')
-  ];
-  if(variant){
-    lines.push((catalogVariantMode(product)==='cor'?'Cor: ':'Combinação: ')+catalogVariantName(variant));
-  }
-  const price=product.preco===null||product.preco===undefined||product.preco===''?null:Number(product.preco);
-  if(price!==null&&Number.isFinite(price)&&price>0)
-    lines.push('Preço no catálogo: '+new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(price));
-  lines.push('', 'Poderiam me informar como realizar a encomenda?');
-  return lines.join('\n');
-}
-async function copyCatalogOrderDetails(text){
-  try{
-    if(navigator.clipboard?.writeText){
-      await navigator.clipboard.writeText(text);
-      return true;
-    }
-  }catch(_){/* Permissão negada: tentar uma alternativa local. */}
-  try{
-    const field=document.createElement('textarea');
-    field.value=text;
-    field.setAttribute('readonly','');
-    field.style.cssText='position:fixed;left:-9999px;top:0;opacity:0';
-    document.body.append(field);
-    field.select();
-    const ok=document.execCommand('copy');
-    field.remove();
-    if(ok)return true;
-  }catch(_){/* Oferecer cópia manual. */}
-  window.prompt('Copie estes detalhes para a conversa no Instagram:',text);
-  return false;
-}
 function makeProductCard(product){
   // Disponibilidade da aba é exclusivamente a do PRODUTO, nunca de cada combinação.
   const available=productAvailable(product);
@@ -158,8 +120,8 @@ function makeProductCard(product){
     product.cores.forEach(c=>list.append(makeColor(c)));
     content.append(list);
   }
-  // Preço e seletor de cores compartilham a mesma faixa compacta.
-  // Sem variação, a faixa mantém a altura dos outros cartões da fileira.
+  // A faixa de informações exibe só o preço. Os controles ficam no rodapé,
+  // com a mesma posição para chaveiros com e sem variação.
   const metaRow=node('div','product-meta-row');
   content.append(metaRow);
   const priceValue=product.preco===null||product.preco===undefined||product.preco===''?null:Number(product.preco);
@@ -184,43 +146,18 @@ function makeProductCard(product){
     product.variacoes.filter(v=>v&&Array.isArray(v.cores)&&v.cores.length===(variationMode==='cor'?1:2));
   const requiresVariation=available&&variantsForSale.length>0;
   let selectedVariant=null;
-  const copyButton=node('button','product-copy-button','Copiar detalhes da encomenda');
-  copyButton.type='button';
-  copyButton.setAttribute('aria-label','Copiar dados deste chaveiro para conversar no Instagram');
-  const copyMessage=node('span','product-copy-message');
-  copyMessage.setAttribute('role','status');
-  copyMessage.setAttribute('aria-live','polite');
-  copyMessage.hidden=true;
-  let copyReset=null;
-  function resetCopyFeedback(){
-    window.clearTimeout(copyReset);
-    copyButton.textContent='Copiar detalhes da encomenda';
-    copyMessage.hidden=true;
-    copyMessage.textContent='';
-  }
-  copyButton.addEventListener('click',async()=>{
-    if(!available||copyButton.disabled)return;
-    const variant=requiresVariation?selectedVariant:null;
-    if(requiresVariation&&(!variant||!catalogVariantAvailable(product,variant)))return;
-    const details=formatCatalogOrderDetails(product,variant);
-    copyButton.disabled=true;
-    const success=await copyCatalogOrderDetails(details);
-    resetCopyFeedback();
-    copyButton.textContent=success?'Detalhes copiados ✓':'Copie os detalhes exibidos';
-    copyMessage.textContent=success?'Agora abra o Instagram e cole na conversa.':'Se não foram copiados, selecione o texto na janela exibida.';
-    copyMessage.hidden=false;
-    copyButton.disabled=requiresVariation&&!catalogVariantAvailable(product,selectedVariant);
-    copyReset=window.setTimeout(resetCopyFeedback,5500);
-  });
+  let variationBlock=null;
+  // Chaveiro comum: Instagram direto. Com variação: seletor primeiro, Instagram
+  // apenas após uma escolha disponível. Nenhum card tem botão de copiar.
   function showAvailability(isAvailable,variant=false){
     badge.className='stock-badge '+(isAvailable?'available':'unavailable');
     badge.textContent=isAvailable?'● Disponível':variant?'● Indisponível nesta variação':'● Sem estoque';
-    if(isAvailable || variant){
-      copyButton.disabled=requiresVariation&&(!selectedVariant||!catalogVariantAvailable(product,selectedVariant));
-      copyButton.title=copyButton.disabled?(selectedVariant?'Esta opção está indisponível':'Escolha uma opção de cores primeiro'):'Copiar informações para enviar pelo Instagram';
-      actions.replaceChildren(copyButton,copyMessage,isAvailable?social:disabled);
-    }else actions.replaceChildren(disabled);
     disabled.textContent=variant?'Esta variação está indisponível':'Indisponível no momento';
+    if(!available){actions.replaceChildren(disabled);return;}
+    if(!requiresVariation){actions.replaceChildren(social);return;}
+    if(!variationBlock)return;
+    if(!selectedVariant){actions.replaceChildren(variationBlock);return;}
+    actions.replaceChildren(variationBlock,isAvailable?social:disabled);
   }
   // Seleção de cores no próprio cartão: a FOTO é substituída no mesmo elemento.
   if(requiresVariation){
@@ -251,7 +188,6 @@ function makeProductCard(product){
       function chooseVariant(index){
         const variant=variations[index],isAvailable=catalogVariantAvailable(product,variant);
         selectedVariant=variant;
-        resetCopyFeedback();
         for(const [i,button] of buttons.entries()){
           const selected=i===index;
           button.classList.toggle('is-selected',selected);
@@ -273,6 +209,8 @@ function makeProductCard(product){
         summaryCount.textContent=catalogVariantName(variant);
         summaryCount.dataset.selected='true';
         showAvailability(isAvailable,true);
+        // Recolher o menu após a escolha para manter os cartões compactos.
+        disclosure.open=false;
       }
       for(const [i,variant] of variations.entries()){
         const button=node('button','product-variation-option');
@@ -296,14 +234,14 @@ function makeProductCard(product){
       panel.append(label,choices,note,photoNotice);
       disclosure.append(panel);
       block.append(disclosure);
-      metaRow.append(block);
+      variationBlock=block;
       // Inicialmente o cartão mostra a FOTO PRINCIPAL; a primeira opção não é selecionada automaticamente.
       note.textContent='Selecione uma opção para conferir a disponibilidade.';
       showAvailability(available,false);
     }
   }
-  if(variationMode==='nenhuma'||!available)showAvailability(available,false);
-  else if(!actions.hasChildNodes())showAvailability(available,false);
+  // Disponibilidade inicial: sem seleção mostra só o seletor (quando houver).
+  if(!requiresVariation||!actions.hasChildNodes())showAvailability(available,false);
   content.append(actions);
   card.append(visual);
   if(illustrativeCaption)card.append(illustrativeCaption);
