@@ -5,6 +5,7 @@ on:
     paths:
       - "cloudflare/**"
       - "tests/cloudflare-api.test.mjs"
+      - "tests/dashboard-v2.test.mjs"
       - "assets/**"
       - "*.html"
       - "data/**"
@@ -35,19 +36,23 @@ jobs:
           test -n "$CATALOG_GITHUB_TOKEN" || (echo "Secret do GitHub para fotos ausente" && exit 1)
           test -n "$CATALOG_ADMIN_PASSWORD" || (echo "Senha administrativa ausente" && exit 1)
       - name: Instalar Wrangler
-        run: npm install --no-save wrangler@4
+        run: npm install --no-save wrangler@4 jsdom@26
       - name: Validar código do servidor e teste de autenticação
         run: |
           node --check cloudflare/catalog-worker.js
           node --check cloudflare/admin-cloudflare.js
+          node --check cloudflare/dashboard-v2.js
           node --check cloudflare/build.mjs
           node --check cloudflare/configure-db.mjs
-          node --test tests/cloudflare-api.test.mjs
+          node --test tests/cloudflare-api.test.mjs tests/dashboard-v2.test.mjs
       - name: Montar cópia do site para Cloudflare e guardar seed de migração
         run: node cloudflare/build.mjs
       - name: Validar scripts da cópia publicada
         run: |
           node --check dist/assets/admin-v58.js
+          node --check dist/assets/dashboard-v2.js
+          test -f dist/assets/dashboard-v2.css
+          grep -q "dashboard-v2.js" dist/painel.html
           node --check dist/assets/site-v58.js
           node --check dist/assets/site-v31.js
           node --check dist/assets/home-v53.js
