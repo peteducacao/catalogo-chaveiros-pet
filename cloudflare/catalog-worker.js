@@ -105,9 +105,95 @@ async function uploadPhoto(request, env) {
   try { saved = JSON.parse(bodyText); } catch { return fail('Resposta inesperada do GitHub.', 502); }
   return reply({ ok: true, path, commit: saved.commit?.sha || null });
 }
+
+const analyticsOrigins = new Set([
+  'https://peteducacao.github.io',
+  'https://catalogo-chaveiros-pet.pet-educacao.workers.dev'
+]);
+function analyticsCors(origin){
+  if(!analyticsOrigins.has(origin))return null;
+  return {
+    'access-control-allow-origin': origin,
+    'access-control-allow-methods': 'POST, OPTIONS',
+    'access-control-allow-headers': 'Content-Type',
+    'access-control-max-age': '600',
+    'vary': 'Origin'
+  };
+}
+function analyticsDay(time=Date.now()){
+  // Dia civil da região do PET (Sergipe); não usar UTC para dividir as visitas.
+  return new Intl.DateTimeFormat('en-CA',{
+    timeZone:'America/Maceio',year:'numeric',month:'2-digit',day:'2-digit'
+  }).format(new Date(time));
+}
+async function analyticsRecord(request,env){
+  const cors=analyticsCors(request.headers.get('origin'));
+  if(!cors)return fail('Origem não autorizada.',403);
+  const input=await parseJson(request,1000);
+  const client=String(input.visitor||'');
+  const page=String(input.page||'');
+  const kind=String(input.kind||'');
+  const action=String(input.action||'');
+  const productId=String(input.productId||'');
+  if(!/^[a-f0-9]{8}-[a-f0-9]{4}-[0-9a-f]{4}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i.test(client) ||
+      !['catalogo','contato'].includes(page) ||
+      !['view','click'].includes(kind) ||
+      (kind==='click'&&!['zoom','cor','copiar','instagram'].includes(action)) ||
+      (kind==='view'&&(action||productId)) ||
+      productId.length>120 || (productId&&!/^[a-zA-Z0-9_-]+$/.test(productId))) {
+    return reply({ok:false,message:'Evento inválido.'},400,cors);
+  }
+  const day=analyticsDay();
+  // A cada dia um hash diferente: sem IP armazenado, sem vincular sessões entre dias.
+  const visitorHash=await hash('catalogo-pet:'+day+':'+client);
+  const first=await env.DB.prepare(
+    'INSERT OR IGNORE INTO analytics_visitors(day,visitor_hash,views,actions) VALUES(?,?,0,0)'
+  ).bind(day,visitorHash).run();
+  const cap=kind==='view'?35:150;
+  const changed=await env.DB.prepare(kind==='view'
+    ?'UPDATE analytics_visitors SET views=views+1 WHERE day=? AND visitor_hash=? AND views<?'
+    :'UPDATE analytics_visitors SET actions=actions+1 WHERE day=? AND visitor_hash=? AND actions<?'
+  ).bind(day,visitorHash,cap).run();
+  if(Number(changed.meta?.changes)!==1)return reply({ok:true,limit:true},200,cors);
+  if(kind==='view'){
+    await env.DB.prepare(
+      'INSERT INTO analytics_daily(day,views,visitors) VALUES(?,1,?) ON CONFLICT(day) DO UPDATE SET views=views+1,visitors=visitors+excluded.visitors'
+    ).bind(day,Number(first.meta?.changes)===1?1:0).run();
+  }else{
+    await env.DB.prepare(
+      'INSERT INTO analytics_actions(day,kind,product_id,total) VALUES(?,?,?,1) ON CONFLICT(day,kind,product_id) DO UPDATE SET total=total+1'
+    ).bind(day,action,productId).run();
+  }
+  return reply({ok:true},200,cors);
+}
+async function analyticsReport(request,env){
+  const days=Number(new URL(request.url).searchParams.get('days'))||30;
+  if(![7,30,90].includes(days))return fail('Período inválido.',400);
+  const start=analyticsDay(Date.now()-(days-1)*86400000);
+  const [daily,actions]=await Promise.all([
+    env.DB.prepare('SELECT day,views,visitors FROM analytics_daily WHERE day>=? ORDER BY day ASC').bind(start).all(),
+    env.DB.prepare('SELECT kind,product_id,SUM(total) AS total FROM analytics_actions WHERE day>=? GROUP BY kind,product_id ORDER BY total DESC LIMIT 500').bind(start).all()
+  ]);
+  const dates=daily.results||[], clicks=actions.results||[];
+  const total=dates.reduce((sum,r)=>sum+Number(r.views||0),0);
+  const uniqueApprox=dates.reduce((sum,r)=>sum+Number(r.visitors||0),0);
+  return reply({
+    ok:true,days,start,today:analyticsDay(),views:total,
+    visitorDays:uniqueApprox,
+    clicks:clicks.reduce((sum,r)=>sum+Number(r.total||0),0),
+    daily:dates,actions:clicks,
+    note:'Visitantes por dia estimados por navegador com consentimento. O mesmo navegador em dias diferentes conta novamente.'
+  });
+}
+
 async function processApi(request, env) {
   const path = new URL(request.url).pathname;
   const method = request.method.toUpperCase();
+  if(path==='/api/analytics/event' && method==='OPTIONS'){
+    const cors=analyticsCors(request.headers.get('origin'));
+    return cors?new Response(null,{status:204,headers:cors}):fail('Origem não autorizada.',403);
+  }
+  if(path==='/api/analytics/event' && method==='POST')return analyticsRecord(request,env);
   if (path === '/api/health' && method === 'GET') {
     const item = await env.DB.prepare('SELECT COUNT(*) AS n FROM documents').first();
     return reply({ ok: Number(item?.n) === 2, service: 'Catálogo PET', database: 'separado', documents: item?.n || 0 });
@@ -159,6 +245,7 @@ async function processApi(request, env) {
   }
   if (!path.startsWith('/api/admin/')) return fail('Endereço não encontrado.', 404);
   if (!await authorized(request, env)) return fail('Entre no painel novamente.', 401);
+  if (path === '/api/admin/analytics' && method === 'GET') return analyticsReport(request,env);
   if (path === '/api/admin/image' && method === 'POST') return uploadPhoto(request, env);
   const match = /^\/api\/admin\/doc\/(products|config)$/.exec(path);
   if (!match || !['GET', 'PUT'].includes(method)) return fail('Operação desconhecida.', 404);
