@@ -90,7 +90,6 @@ function makeProductCard(product){
   }
   const content=node('div','product-info');
   content.append(node('h2','',product.nome||'Chaveiro'));
-  if(product.descricao)content.append(node('p','product-description',product.descricao));
   if(available && product.mostrarCores!==false && product.cores?.length){
     content.append(node('span','colors-label','Cores disponíveis'));
     const list=node('div','color-list');
