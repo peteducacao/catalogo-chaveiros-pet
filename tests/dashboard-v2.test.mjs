@@ -41,7 +41,7 @@ test('Reorganiza sem perder IDs nem formulários',()=>{
   dom.window.close();
 });
 
-test('Menu e abas do desktop e celular preservam as áreas existentes',()=>{
+test('Menu e abas do desktop e celular preservam as áreas existentes',async()=>{
   const {dom,document}=setup();
   const press=key=>document.querySelector('.cg-nav-button[data-cg-view="'+key+'"]').click();
   press('products');
@@ -63,6 +63,8 @@ test('Menu e abas do desktop e celular preservam as áreas existentes',()=>{
   assert.equal(toggle.getAttribute('aria-expanded'),'true');
   document.getElementById('cg-menu-shade').click();
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
+  // Aguarda a conclusão das Promises de leitura do relatório antes de fechar o DOM.
+  await new Promise(resolve=>dom.window.setTimeout(resolve,10));
   dom.window.close();
 });
 
