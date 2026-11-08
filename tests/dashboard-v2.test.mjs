@@ -95,3 +95,25 @@ test('Indicadores exibem os números existentes, sem histórico ou estatísticas
   assert.ok(!document.querySelector('.cg-notifications'));
   dom.window.close();
 });
+
+test('Cadastro: estoque e legenda não encolhem nem se sobrepõem no contêiner rolável',()=>{
+  const {dom,document}=setup();
+  const css=readFileSync('cloudflare/dashboard-v2.css','utf8');
+  const marker=css.lastIndexOf('/* v5 — correção da CAUSA');
+  assert.ok(marker>=0,'A correção da estrutura do formulário deve existir');
+  const style=document.createElement('style');
+  style.textContent=css.slice(marker);
+  document.head.append(style);
+  const modalBody=document.querySelector('.editor-modal .modal-body');
+  const stock=modalBody.querySelector(':scope > .stock-box');
+  const caption=modalBody.querySelector(':scope > .illustrative-field');
+  assert.ok(stock&&caption,'Estoque e legenda devem continuar com blocos próprios');
+  assert.equal(stock.nextElementSibling,caption,'A legenda deve aparecer após estoque, não sobre ele');
+  assert.equal(dom.window.getComputedStyle(modalBody).display,'block','Fluxo normal impede o encolhimento flexível que causou a sobreposição');
+  assert.equal(dom.window.getComputedStyle(stock).display,'grid','O estoque deve usar uma grade compacta');
+  assert.equal(dom.window.getComputedStyle(caption).display,'block','A legenda ocupa sua própria linha');
+  for(const id of ['product-quantity','product-price','product-available','product-caption','product-collection']){
+    assert.equal(document.querySelectorAll('#'+id).length,1,'Campos originais devem ser preservados: '+id);
+  }
+  dom.window.close();
+});
