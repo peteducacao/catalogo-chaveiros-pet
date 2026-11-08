@@ -143,7 +143,16 @@ async function processApi(request, env) {
   if ((path === '/api/data/chaveiros.json' || path === '/api/data/config.json') && method === 'GET') {
     const row = await readDoc(env.DB, path.endsWith('chaveiros.json') ? 'products' : 'config');
     if (!row) return fail('Catálogo ainda não inicializado.', 503);
-    return new Response(row.content, { status: 200, headers: jsonHeaders });
+    // Dados públicos podem ser consultados pelo catálogo original no GitHub Pages.
+    // Nunca habilitar CORS nas rotas administrativas, que dependem de sessão local.
+    return new Response(row.content, {
+      status: 200,
+      headers: {
+        ...jsonHeaders,
+        'access-control-allow-origin': 'https://peteducacao.github.io',
+        'vary': 'Origin'
+      }
+    });
   }
   if (path === '/api/admin/session' && method === 'GET') {
     return await authorized(request, env) ? reply({ ok: true, nome: 'Admin PET' }) : fail('Entre novamente.', 401);
