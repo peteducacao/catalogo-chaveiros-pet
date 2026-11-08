@@ -11,7 +11,6 @@ function setup() {
     runScripts:'outside-only',pretendToBeVisual:true
   });
   dom.window.scrollTo=()=>{};
-  dom.window.fetch=async()=>({ok:true,json:async()=>({daily:[],actions:[],views:0,visitorDays:0,clicks:0,today:'2026-11-08'})});
   const document=dom.window.document;
   // Simula os controladores existentes sem alterar o painel original.
   for(const [name,selector] of [
@@ -35,7 +34,7 @@ test('Reorganiza sem perder IDs nem formulários',()=>{
   }
   assert.ok(document.querySelector('.cg-sidebar'));
   assert.ok(document.querySelector('.cg-overview-grid'));
-  assert.equal(document.querySelectorAll('.cg-nav-button').length,6);
+  assert.equal(document.querySelectorAll('.cg-nav-button').length,5);
   assert.ok(document.getElementById('cg-overview')?.hidden===false);
   assert.equal(document.getElementById('section-products').hidden,true);
   dom.window.close();
@@ -47,8 +46,6 @@ test('Menu e abas do desktop e celular preservam as áreas existentes',async()=>
   press('products');
   assert.equal(document.getElementById('section-products').hidden,false);
   assert.equal(document.getElementById('cg-overview').hidden,true);
-  press('analytics');
-  assert.equal(document.getElementById('cg-analytics').hidden,false);
   press('contacts');
   assert.equal(document.getElementById('section-contacts').hidden,false);
   press('colors');
@@ -63,8 +60,6 @@ test('Menu e abas do desktop e celular preservam as áreas existentes',async()=>
   assert.equal(toggle.getAttribute('aria-expanded'),'true');
   document.getElementById('cg-menu-shade').click();
   assert.equal(toggle.getAttribute('aria-expanded'),'false');
-  // Aguarda a conclusão das Promises de leitura do relatório antes de fechar o DOM.
-  await new Promise(resolve=>dom.window.setTimeout(resolve,10));
   dom.window.close();
 });
 
@@ -94,7 +89,7 @@ test('Indicadores exibem os números existentes, sem histórico ou estatísticas
   assert.equal(document.getElementById('cg-stock-total').textContent,'14');
   assert.equal(document.getElementById('cg-health-ratio').textContent,'80%');
   assert.match(document.getElementById('cg-health-note').textContent,/2 modelos sem estoque/);
-  assert.ok(document.querySelector('.cg-nav-button[data-cg-view="analytics"]'));
+  assert.ok(!document.querySelector('.cg-nav-button[data-cg-view="analytics"]'));
   assert.ok(!document.querySelector('.cg-nav-button[data-cg-view="home"]'));
   assert.equal(document.getElementById('tab-home'),null);
   assert.ok(!document.querySelector('.cg-notifications'));
