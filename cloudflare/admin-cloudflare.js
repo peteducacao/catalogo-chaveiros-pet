@@ -1,6 +1,6 @@
 'use strict';
 // Nenhuma senha, token ou chave de administrador está incluída neste arquivo.
-// O acesso de escrita depende exclusivamente de autorização validada pelo GitHub.
+// O acesso de escrita depende de sessão segura validada pela API Cloudflare.
 (()=>{
   const API='https://api.github.com/repos/'+PET_REPOSITORY;
   const ROOT='https://api.github.com';
@@ -92,11 +92,11 @@
       notice.id='draft-warning';
       notice.className='publish-info';
       notice.style.marginBottom='24px';
-      notice.innerHTML='<strong>Rascunho local: ainda não publicado</strong><p>O painel exibe os chaveiros confirmados no catálogo. Este rascunho antigo foi guardado separadamente e pode conter modelos já excluídos. Confira todos os registros antes de recuperá-lo manualmente.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn btn-primary" id="draft-copy">Copiar dados</button><a class="btn btn-outline" target="_blank" rel="noopener noreferrer" href="https://github.com/peteducacao/catalogo-chaveiros-pet/edit/main/data/chaveiros.json">Abrir editor do GitHub ↗</a><button type="button" class="btn btn-outline" id="draft-download">Baixar JSON</button></div><p id="draft-copy-status" role="status" aria-live="polite"></p>';
+      notice.innerHTML='<strong>Rascunho local: ainda não publicado</strong><p>O painel exibe os dados atuais do banco D1. Este rascunho antigo foi preservado apenas como backup: não é publicado automaticamente.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><button type="button" class="btn btn-primary" id="draft-copy">Copiar dados</button><button type="button" class="btn btn-outline" id="draft-download">Baixar JSON</button></div><p id="draft-copy-status" role="status" aria-live="polite"></p>';
       byId('dashboard').insertBefore(notice,byId('dashboard').querySelector('.dashboard-top'));
       byId('draft-copy').addEventListener('click',async()=>{
         const data=loadDraft();
-        try{await navigator.clipboard.writeText(JSON.stringify(data,null,2)+'\n');byId('draft-copy-status').textContent='Copiado. Agora substitua o conteúdo do arquivo no GitHub e clique em Commit changes.';}
+        try{await navigator.clipboard.writeText(JSON.stringify(data,null,2)+'\n');byId('draft-copy-status').textContent='Cópia de segurança concluída. Guarde os dados ou baixe o JSON para recuperação.';}
         catch{byId('draft-copy-status').textContent='Não consegui copiar automaticamente. Use Baixar JSON.';}
       });
       byId('draft-download').addEventListener('click',()=>{
@@ -492,7 +492,7 @@
     const feedback=byId('home-feedback');
     const description=byId('config-home-description').value.trim();
     button.disabled=true;
-    feedback.textContent='Salvando apresentação no GitHub...';
+    feedback.textContent='Salvando apresentação no catálogo...';
     feedback.dataset.kind='pending';
     try{
       const sha=await updateConfigGitHub('Atualiza texto da página inicial',current=>{
@@ -501,8 +501,8 @@
         return current;
       });
       feedback.dataset.kind='success';
-      feedback.textContent=sha?'Apresentação salva no GitHub!':'A apresentação já estava atualizada.';
-      if(sha)saveFeedback('success','Texto da página inicial salvo no GitHub!',sha);
+      feedback.textContent=sha?'Apresentação salva no catálogo!':'A apresentação já estava atualizada.';
+      if(sha)saveFeedback('success','Texto da página inicial salvo no catálogo!',sha);
       toast(sha?'Apresentação atualizada no catálogo!':'Nenhuma mudança detectada.');
     }catch(error){
       feedback.dataset.kind='error';
@@ -625,10 +625,10 @@
         try{localStorage.removeItem(DRAFT_PRODUCTS);}catch{}
         showDraftWarning();render();
         const label=verified
-          ?'Alteração encontrada no GitHub após uma falha de resposta. Gravação confirmada.'
+          ?'Alteração confirmada no banco após falha de conexão.'
           :'Salvo no catálogo! '+message+'. A página pública já utiliza os dados atualizados.';
         saveFeedback('success',label,sha);
-        toast(verified?'Alteração confirmada no GitHub.':'Salvo no catálogo! '+message+'.');
+        toast(verified?'Alteração confirmada no catálogo.':'Salvo no catálogo! '+message+'.');
       };
       busy=true;
       saveFeedback('pending','Salvando '+message+'...');
@@ -649,7 +649,7 @@
           const encoded=JSON.stringify(next,null,2)+'\n';
           if(before===after){
             adoptRemoteProducts(next);render();
-            saveFeedback('info','Nenhuma mudança detectada em '+message+'. Nada precisou ser enviado ao GitHub.');
+            saveFeedback('info','Nenhuma mudança detectada em '+message+'. Nada precisou ser gravado.');
             toast('Nenhuma alteração detectada; os dados já estavam iguais.');
             return null;
           }
@@ -682,7 +682,7 @@
             const conflict=(error.status===409||error.status===422);
             const transient=!error.status||error.status===429||error.status>=500;
             if((conflict||githubRateLimit||transient)&&attempt<4){
-              saveFeedback('pending','Conferindo conexão com o GitHub. Tentativa '+(attempt+2)+' de 5; aguarde sem fechar o painel...');
+              saveFeedback('pending','Conferindo conexão com o banco do catálogo. Tentativa '+(attempt+2)+' de 5; aguarde sem fechar o painel...');
               // Uma resposta perdida pode ter sido gravada. O próximo GET lê um SHA fresco,
               // e as ações de disponibilidade usam o estado desejado (idempotente).
               await sleep(githubRateLimit?4500:Math.min(3600,1000*(attempt+1)));
@@ -703,10 +703,10 @@
         }
         const suffix=stageFailedChanges
           ?' Se aparecer um rascunho, use Copiar dados para recuperá-lo.'
-          :' O chaveiro permanece na lista; a exclusão não foi confirmada pelo GitHub.';
+          :' O chaveiro permanece na lista; a exclusão não foi confirmada pelo banco.';
         const uncertain=!error.status||error.status===409||error.status===422||error.status===429||error.status>=500;
         const headline=uncertain?'GRAVAÇÃO NÃO CONFIRMADA. ':'NÃO FOI POSSÍVEL SALVAR. ';
-        const instructions=uncertain?' Confira os dados no GitHub antes de repetir a ação.':'';
+        const instructions=uncertain?' Confira os dados no painel antes de repetir a ação.':'';
         saveFeedback('error',headline+error.message+instructions+suffix);
         toast(uncertain?'A conexão falhou após novas tentativas. Confira a alteração antes de repetir.':'Não foi possível salvar. '+error.message,true);
         throw error;
@@ -777,7 +777,7 @@
     orderRevision++;
     // A posição muda imediatamente na tela. Movimentos seguidos geram um único commit.
     renderProducts();
-    saveFeedback('pending','Ordem alterada. Salvando automaticamente no GitHub...');
+    saveFeedback('pending','Ordem alterada. Salvando automaticamente no catálogo...');
     if(orderTimer)window.clearTimeout(orderTimer);
     orderTimer=window.setTimeout(persistOrder,1050);
   }
@@ -791,7 +791,7 @@
       if(orderRevision===revision){
         desiredOrderIds=null;
         renderProducts();
-        saveFeedback('success','Ordem salva no GitHub! O catálogo será atualizado em alguns minutos.');
+        saveFeedback('success','Ordem salva no catálogo! A página pública será atualizada ao recarregar.');
       }
     }catch(error){
       // Mantém a ordem ajustada na tela e no rascunho para uma nova tentativa.
@@ -882,7 +882,7 @@
         if(!window.confirm('Excluir "'+item.nome+'" da lista de cores? Os chaveiros existentes não serão alterados.'))return;
         colorManagerBusy=true;
         remove.disabled=true;
-        setPaletteFeedback('pending','Excluindo cor no GitHub...');
+        setPaletteFeedback('pending','Excluindo cor no catálogo...');
         try{
           await updateConfigGitHub('Remove a cor '+item.nome+' da paleta',current=>{
             const stored=Array.isArray(current.paletaCores)?current.paletaCores:initialPalette;
@@ -930,7 +930,7 @@
     colorManagerBusy=true;
     const save=byId('colors-manager-save');
     save.disabled=true;
-    setPaletteFeedback('pending','Salvando paleta no GitHub...');
+    setPaletteFeedback('pending','Salvando paleta no catálogo...');
     try{
       await updateConfigGitHub(editingPaletteColor?'Edita cor da paleta: '+nome:'Cadastra cor na paleta: '+nome,current=>{
         const list=normalizePaletteEntries(Array.isArray(current.paletaCores)?current.paletaCores:initialPalette);
@@ -1227,7 +1227,7 @@
       remove.addEventListener('click',async()=>{
         if(collectionManagerBusy||!window.confirm('Excluir a coleção “'+name+'” da lista?'))return;
         collectionManagerBusy=true;remove.disabled=true;
-        collectionMessage('pending','Excluindo coleção no GitHub...');
+        collectionMessage('pending','Excluindo coleção no catálogo...');
         try{
           await updateConfigGitHub('Exclui coleção '+name,current=>{
             const entries=Array.isArray(current.colecoes)?current.colecoes:[];
@@ -1270,7 +1270,7 @@
     collectionManagerBusy=true;
     const button=byId('collections-manager-save');
     button.disabled=true;
-    collectionMessage('pending','Salvando coleção no GitHub...');
+    collectionMessage('pending','Salvando coleção no catálogo...');
     try{
       await updateConfigGitHub('Adiciona coleção '+name,current=>{
         const list=Array.isArray(current.colecoes)?current.colecoes:[];
@@ -1363,7 +1363,7 @@
       for(let attempt=0;attempt<4;attempt++){
         const file=await repoRead('data/config.json');
         const current=JSON.parse(file.content);
-        if(!current||Array.isArray(current)||typeof current!=='object')throw Error('Configuração do site inválida no GitHub.');
+        if(!current||Array.isArray(current)||typeof current!=='object')throw Error('Configuração do site inválida no banco.');
         const before=JSON.stringify(current);
         const updated=transform(JSON.parse(before));
         if(!updated||Array.isArray(updated)||typeof updated!=='object')throw Error('A configuração não pôde ser atualizada.');
@@ -1527,7 +1527,7 @@
       remove.addEventListener('click',async()=>{
         if(!window.confirm('Excluir '+(social.nome||'esta rede social')+' da página de Contato?'))return;
         remove.disabled=true;edit.disabled=true;
-        setSocialFeedback('pending','Excluindo rede social no GitHub...');
+        setSocialFeedback('pending','Excluindo rede social no catálogo...');
         try{
           const sha=await updateConfigGitHub('Remove rede social '+social.nome,current=>{
             const items=Array.isArray(current.redesSociais)?current.redesSociais:[];
@@ -1536,7 +1536,7 @@
             return current;
           });
           if(byId('social-edit-id').value===social.id)clearSocialForm();
-          setSocialFeedback('success','Rede social excluída e salva no GitHub.');
+          setSocialFeedback('success','Rede social excluída e salva no catálogo.');
           saveFeedback('success','Rede social removida do site.',sha);
           toast('Rede social excluída!');
         }catch(error){
@@ -1583,7 +1583,7 @@
     const newId=id||('rede-'+(crypto.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8)));
     const form=byId('social-form'),submit=byId('social-submit');
     submit.disabled=true;
-    setSocialFeedback('pending','Salvando rede social no GitHub...');
+    setSocialFeedback('pending','Salvando rede social no catálogo...');
     try{
       const sha=await updateConfigGitHub((id?'Edita':'Adiciona')+' rede social '+name,current=>{
         const items=Array.isArray(current.redesSociais)?current.redesSociais.map(item=>({...item})):[];
@@ -1592,7 +1592,7 @@
         if(customBg)updated.corFundo=chosenBg;
         if(id){
           const index=items.findIndex(item=>item.id===id);
-          if(index<0)throw Error('A rede social não existe mais no GitHub. Atualize o painel.');
+          if(index<0)throw Error('A rede social não existe mais no catálogo. Atualize o painel.');
           items[index]=updated;
         }else{
           if(items.length>=30)throw Error('Limite de 30 redes sociais atingido.');
@@ -1602,8 +1602,8 @@
         return current;
       });
       clearSocialForm();
-      setSocialFeedback('success',sha?'Rede social salva e publicada no GitHub!':'Nenhuma alteração pendente nessa rede social.');
-      if(sha)saveFeedback('success','Rede social salva no GitHub.',sha);
+      setSocialFeedback('success',sha?'Rede social salva no catálogo!':'Nenhuma alteração pendente nessa rede social.');
+      if(sha)saveFeedback('success','Rede social salva no catálogo.',sha);
       toast('Rede social cadastrada/atualizada!');
     }catch(error){
       setSocialFeedback('error','NÃO SALVO: '+error.message);
@@ -1645,7 +1645,7 @@
     try{url=normalizeSocialUrl(byId('institutional-url').value);}
     catch(error){feedback.textContent=error.message;feedback.dataset.kind='error';return;}
     submit.disabled=true;feedback.dataset.kind='pending';
-    feedback.textContent='Salvando site no GitHub...';
+    feedback.textContent='Salvando site no catálogo...';
     try{
       const sha=await updateConfigGitHub('Atualiza site institucional do PET Educação',current=>{
         current.siteInstitucional={titulo:title,url,descricao:description,visivel:visible};
@@ -1653,8 +1653,8 @@
       });
       renderInstitutionalWebsite();
       feedback.dataset.kind='success';
-      feedback.textContent=sha?'Site institucional atualizado no GitHub. Aguarde a publicação.':'As informações já estão atualizadas.';
-      if(sha)saveFeedback('success','Informações do site institucional salvas no GitHub.',sha);
+      feedback.textContent=sha?'Site institucional atualizado no catálogo.':'As informações já estão atualizadas.';
+      if(sha)saveFeedback('success','Informações do site institucional salvas no catálogo.',sha);
       toast(sha?'Site institucional salvo com sucesso!':'Nenhuma alteração no site.');
     }catch(error){
       feedback.dataset.kind='error';
@@ -1722,7 +1722,7 @@
     }
     button.disabled=true;
     feedback.dataset.kind='pending';
-    feedback.textContent='Salvando informações do PET no GitHub...';
+    feedback.textContent='Salvando informações do PET no catálogo...';
     try{
       const sha=await updateConfigGitHub('Atualiza endereço e contatos institucionais do PET Educação',current=>{
         current.contatoInstitucional={...(current.contatoInstitucional||{}),...info};
@@ -1730,7 +1730,7 @@
       });
       renderContactInformation();
       feedback.dataset.kind='success';
-      feedback.textContent=sha?'Informações salvas no GitHub. Aguarde a publicação.':'Informações já estão atualizadas.';
+      feedback.textContent=sha?'Informações salvas no catálogo.':'Informações já estão atualizadas.';
       if(sha)saveFeedback('success','Contatos institucionais salvos.',sha);
       toast(sha?'Contato institucional atualizado!':'Sem alterações pendentes.');
     }catch(error){
