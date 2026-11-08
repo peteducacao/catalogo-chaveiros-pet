@@ -69,7 +69,7 @@ async function useAdmin(width,height){
     await page.locator('#editor-modal').waitFor({state:'visible'});
     // Conferir a estrutura real, não só a presença dos elementos no DOM.
     let rect=await geometry(page);
-    check(rect.bodyStyle==='block','A área do formulário está usando flex e pode comprimir seções: '+JSON.stringify(rect));
+    check(rect.bodyStyle==='grid','A área do formulário precisa usar grid para impedir sobreposição: '+JSON.stringify(rect));
     check(rect.stockStyle==='grid','Quantidade e preço não estão na grade');
     check(rect.stock.bottom+3<=rect.caption.top,
       'Estoque está por cima da legenda em '+viewportLabel+': '+JSON.stringify(rect));
