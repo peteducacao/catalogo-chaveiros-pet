@@ -40,8 +40,12 @@ const products=JSON.parse(Buffer.from(productDoc.content,'base64').toString('utf
 const config=JSON.parse(Buffer.from(configDoc.content,'base64').toString('utf8'));
 assert.ok(Array.isArray(products)&&products.length>=1,'Produtos devem ter sido preservados');
 assert.ok(config&&typeof config==='object'&&!Array.isArray(config));
-const publicData=await fetch(base+'/api/data/chaveiros.json',{cache:'no-store'});
+const publicData=await fetch(base+'/api/data/chaveiros.json',{
+  cache:'no-store',headers:{Origin:'https://peteducacao.github.io'}
+});
 assert.equal(publicData.status,200);
+assert.equal(publicData.headers.get('access-control-allow-origin'),'https://peteducacao.github.io',
+ 'O GitHub Pages deve ter permissão CORS somente para a leitura pública.');
 assert.deepEqual(await publicData.json(),products,'Catálogo público e painel devem ler o mesmo banco');
 const logout=await fetch(base+'/api/logout',{
  method:'POST',headers:{cookie,'content-type':'application/json'},body:'{}'
