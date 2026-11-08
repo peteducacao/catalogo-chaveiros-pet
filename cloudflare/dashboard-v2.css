@@ -312,79 +312,75 @@ body[data-page="painel"].cg-dashboard-ready .editor-modal .collection-picker-row
 }
 
 
-/* v5 — correção da CAUSA: .modal-body era flex-column e encolhia .stock-box
-   para menos da altura de seus controles; os filhos transbordavam sobre
-   "Legenda da imagem". Usar fluxo normal dentro da área rolável elimina isso. */
-body[data-page="painel"] .editor-modal .modal-body {
-  display:block!important;
+
+/* v7 — edição em GRID real, sem encolhimento nem margens colapsadas.
+   O espaçamento entre todos os blocos é criado por gap, não por margin. */
+body[data-page="painel"] .editor-modal .modal-body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-auto-rows:max-content!important;
+  align-items:start!important;
+  align-content:start!important;
+  gap:18px!important;
+  min-height:0!important;
   overflow-y:auto!important;
   overflow-x:hidden!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > *{
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:auto!important;
   min-height:0!important;
-}
-body[data-page="painel"] .editor-modal .modal-body > * {
+  max-height:none!important;
+  margin:0!important;
   flex:none!important;
-  flex-shrink:0!important;
-  margin:0 0 17px!important;
+  align-self:start!important;
 }
-body[data-page="painel"] .editor-modal .modal-body > .stock-box {
+body[data-page="painel"] .editor-modal .modal-body > .stock-box{
   display:grid!important;
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
   grid-auto-rows:max-content!important;
   align-items:start!important;
   align-content:start!important;
-  box-sizing:border-box!important;
-  width:100%!important;
-  height:auto!important;
-  min-height:max-content!important;
-  max-height:none!important;
-  overflow:visible!important;
-  padding:16px!important;
   gap:14px 16px!important;
+  padding:16px!important;
+  overflow:visible!important;
 }
-body[data-page="painel"] .editor-modal .modal-body > .stock-box > .field {
+body[data-page="painel"] .editor-modal .modal-body > .stock-box > .field{
   min-width:0!important;
   min-height:max-content!important;
   height:auto!important;
   max-height:none!important;
+  margin:0!important;
 }
-body[data-page="painel"] .editor-modal .modal-body > .stock-box > .toggle-field {
+body[data-page="painel"] .editor-modal .modal-body > .stock-box > .toggle-field{
   grid-column:1/-1!important;
   position:relative!important;
   align-self:start!important;
   justify-self:start!important;
+  min-height:28px!important;
 }
-body[data-page="painel"] .editor-modal .modal-body > .illustrative-field {
+body[data-page="painel"] .editor-modal .modal-body > .illustrative-field{
   display:block!important;
   position:static!important;
-  width:100%!important;
   min-height:max-content!important;
-  height:auto!important;
   overflow:visible!important;
   clear:both!important;
 }
-body[data-page="painel"] .editor-modal .modal-body > .illustrative-field #caption-field {
+body[data-page="painel"] .editor-modal .modal-body > .illustrative-field #caption-field{
   display:flex!important;
   flex-direction:column!important;
   align-items:stretch!important;
   gap:8px!important;
 }
-body[data-page="painel"] .editor-modal .modal-body > .illustrative-field #caption-field > * {
+body[data-page="painel"] .editor-modal .modal-body > .illustrative-field #caption-field > *{
   position:static!important;
   flex:none!important;
 }
-@media(max-width:650px) {
-  body[data-page="painel"] .editor-modal .modal-body > .stock-box {
+@media(max-width:650px){
+  body[data-page="painel"] .editor-modal .modal-body > .stock-box{
     grid-template-columns:minmax(0,1fr)!important;
     gap:12px!important;
+    padding:14px!important;
   }
-}
-
-
-/* v6 — separar visualmente estoque e legenda em Chrome real.
-   As caixas já não se sobrepõem, mas regras antigas zeravam a margem. */
-body[data-page="painel"] .editor-modal .modal-body > .stock-box {
-  margin-bottom:18px!important;
-}
-body[data-page="painel"] .editor-modal .modal-body > .illustrative-field {
-  margin-top:0!important;
 }
