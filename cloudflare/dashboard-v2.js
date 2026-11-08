@@ -199,9 +199,6 @@
       $('cg-analytics-message').textContent=error.message||'Não foi possível carregar as estatísticas.';
     }
   }
-  $('cg-analytics-days').addEventListener('change',loadAnalytics);
-  $('cg-analytics-reload').addEventListener('click',loadAnalytics);
-
   const tools=document.createElement('section');
   tools.id='cg-tools';
   tools.className='cg-tools';
@@ -214,6 +211,8 @@
   dashboard.append(root);
   document.body.append(mobileShade);
   document.body.classList.add('cg-dashboard-ready');
+  $('cg-analytics-days').addEventListener('change',loadAnalytics);
+  $('cg-analytics-reload').addEventListener('click',loadAnalytics);
 
   const menuButton=$('cg-menu-toggle');
   const sidebar=$('cg-sidebar');
