@@ -17,7 +17,7 @@ const newLoad = "async function loadData(file){const url=file==='data/chaveiros.
 for(const name of ['site-v31.js','site-v58.js','home-v53.js']){
   const path=join(out,'assets',name);
   const original=await readFile(path,'utf8');
-  const loaderLine=original.split('\\n').find(line=>line.startsWith('async function loadData(file){'));
+  const loaderLine=original.split(String.fromCharCode(10)).find(line=>line.startsWith('async function loadData(file){'));
   if(!loaderLine)throw Error('Não foi possível adaptar a consulta: '+name);
   await writeFile(path,original.replace(loaderLine,newLoad));
 }
