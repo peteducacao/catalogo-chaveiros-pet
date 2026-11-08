@@ -99,7 +99,7 @@ test('Indicadores exibem os números existentes, sem histórico ou estatísticas
 test('Cadastro: estoque e legenda não encolhem nem se sobrepõem no contêiner rolável',()=>{
   const {dom,document}=setup();
   const css=readFileSync('cloudflare/dashboard-v2.css','utf8');
-  const marker=css.lastIndexOf('/* v5 — correção da CAUSA');
+  const marker=css.lastIndexOf('/* v7 — edição em GRID real');
   assert.ok(marker>=0,'A correção da estrutura do formulário deve existir');
   const style=document.createElement('style');
   style.textContent=css.slice(marker);
@@ -109,7 +109,7 @@ test('Cadastro: estoque e legenda não encolhem nem se sobrepõem no contêiner 
   const caption=modalBody.querySelector(':scope > .illustrative-field');
   assert.ok(stock&&caption,'Estoque e legenda devem continuar com blocos próprios');
   assert.equal(stock.nextElementSibling,caption,'A legenda deve aparecer após estoque, não sobre ele');
-  assert.equal(dom.window.getComputedStyle(modalBody).display,'block','Fluxo normal impede o encolhimento flexível que causou a sobreposição');
+  assert.equal(dom.window.getComputedStyle(modalBody).display,'grid','A grade empilha as seções sem encolher ou colapsar margens');
   assert.equal(dom.window.getComputedStyle(stock).display,'grid','O estoque deve usar uma grade compacta');
   assert.equal(dom.window.getComputedStyle(caption).display,'block','A legenda ocupa sua própria linha');
   for(const id of ['product-quantity','product-price','product-available','product-caption','product-collection']){
