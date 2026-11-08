@@ -378,3 +378,13 @@ body[data-page="painel"] .editor-modal .modal-body > .illustrative-field #captio
     gap:12px!important;
   }
 }
+
+
+/* v6 — separar visualmente estoque e legenda em Chrome real.
+   As caixas já não se sobrepõem, mas regras antigas zeravam a margem. */
+body[data-page="painel"] .editor-modal .modal-body > .stock-box {
+  margin-bottom:18px!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > .illustrative-field {
+  margin-top:0!important;
+}
