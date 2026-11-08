@@ -6,6 +6,7 @@ on:
       - "cloudflare/**"
       - "tests/cloudflare-api.test.mjs"
       - "tests/dashboard-v2.test.mjs"
+      - "tests/analytics-api.test.mjs"
       - "assets/**"
       - "*.html"
       - "data/**"
@@ -44,7 +45,7 @@ jobs:
           node --check cloudflare/dashboard-v2.js
           node --check cloudflare/build.mjs
           node --check cloudflare/configure-db.mjs
-          node --test tests/cloudflare-api.test.mjs tests/dashboard-v2.test.mjs
+          node --test tests/cloudflare-api.test.mjs tests/dashboard-v2.test.mjs tests/analytics-api.test.mjs
       - name: Montar cópia do site para Cloudflare e guardar seed de migração
         run: node cloudflare/build.mjs
       - name: Validar scripts da cópia publicada
