@@ -76,6 +76,8 @@ jobs:
         env:
           CATALOG_GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN }}
         run: printf '%s' "$CATALOG_GITHUB_TOKEN" | npx wrangler secret put CATALOG_GITHUB_TOKEN --config wrangler.catalogo.jsonc
+      - name: Remover somente tabelas antigas de estatísticas do catálogo
+        run: npx wrangler d1 execute DB --config wrangler.catalogo.jsonc --remote --file=cloudflare/remove-analytics.sql --yes
       - name: Validar publicação, senha e produtos reais sem alterações no banco
         env:
           CATALOG_WORKER_URL: ${{ vars.CATALOG_WORKER_URL || 'https://catalogo-chaveiros-pet.pet-educacao.workers.dev' }}
