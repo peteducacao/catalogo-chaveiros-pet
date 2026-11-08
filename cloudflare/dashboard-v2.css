@@ -142,3 +142,41 @@ body[data-page="painel"].cg-dashboard-ready .editor-modal .modal-footer{backgrou
 @media(prefers-reduced-motion:reduce){
  .cg-sidebar,.cg-quick-grid button,.cg-health-track span{transition:none!important}
 }
+
+
+/* Relatórios anônimos: seguem os cartões e a tipografia do Inventário PET. */
+.cg-analytics{display:flex;flex-direction:column;gap:16px;min-width:0}
+.cg-analytics[hidden]{display:none!important}
+.cg-analytics-controls{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.cg-analytics-controls h2{margin:0;color:#143e68;font:800 21px Manrope,'DM Sans',sans-serif}
+.cg-analytics-controls p{font-size:12px;color:#75899b;margin:4px 0 0}
+.cg-analytics-filter{display:flex;align-items:center;gap:9px}
+.cg-analytics-filter label{font-size:11px;font-weight:800;color:#617788}
+.cg-analytics-filter select,.cg-analytics-filter button{min-height:42px;padding:9px 12px;border:1px solid #cddfe2;background:white;border-radius:12px;color:#214960;font-size:12px;font-weight:750}
+.cg-analytics-filter button{cursor:pointer}
+.cg-analytics-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cg-analytic-card{background:#fff;border:1px solid #dfe9ec;border-radius:16px;box-shadow:0 5px 20px #153b5811;padding:18px;min-width:0}
+.cg-analytic-card span{display:block;color:#667e8f;font-size:12px;font-weight:750;min-height:33px}
+.cg-analytic-card strong{display:block;color:#163e68;font-size:clamp(25px,3.3vw,34px);font-weight:850;margin-top:8px}
+.cg-analytic-card:nth-child(2) strong{color:#0d8b76}
+.cg-analytic-card:nth-child(3) strong{color:#6353ad}
+.cg-analytics-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+.cg-analytics .cg-panel{margin:0;min-width:0}
+.cg-analytics .cg-panel h3{font:800 17px Manrope,'DM Sans',sans-serif;color:#163f68;letter-spacing:-.025em;margin:0 0 16px}
+.cg-analytics-chart{display:flex;flex-direction:column;gap:9px;min-height:120px}
+.cg-analytics-bar-row{display:grid;grid-template-columns:42px minmax(0,1fr) 45px;align-items:center;gap:9px}
+.cg-analytics-bar-row>span{color:#718394;font-size:10px;font-weight:700}
+.cg-analytics-bar-row strong{color:#173f68;font-size:11px;text-align:right}
+.cg-analytics-bar-bg{height:14px;background:#eaf3f4;border-radius:5px;overflow:hidden}
+.cg-analytics-bar-bg>span{display:block;height:100%;background:linear-gradient(90deg,#0eaaa7,#58cab4);border-radius:5px;min-width:2px}
+.cg-analytics-ranking{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0}
+.cg-analytics-ranking li,.cg-analytics-action-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 3px;border-bottom:1px solid #e9eeee}
+.cg-analytics-ranking li:last-child,.cg-analytics-action-row:last-child{border-bottom:0}
+.cg-analytics-ranking span,.cg-analytics-action-row span{font-size:12px;color:#395d70;overflow-wrap:anywhere}
+.cg-analytics-ranking strong,.cg-analytics-action-row strong{font-size:13px;color:#0f897d;font-weight:800;white-space:nowrap}
+.cg-analytics-actions{margin:0}
+.cg-analytics-message{min-height:17px;margin:0;color:#657e8f;font-size:11px}
+.cg-analytics-empty{color:#8b9ca5!important;font-size:12px!important;margin:0!important}
+.cg-analytics-disclaimer{margin:0;font-size:11px;color:#728595;line-height:1.7}
+@media(max-width:1100px){.cg-analytics-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.cg-analytics-grid{grid-template-columns:1fr}}
+@media(max-width:650px){.cg-analytics-controls{flex-direction:column;align-items:stretch}.cg-analytics-filter{justify-content:space-between}.cg-analytic-card{padding:14px}.cg-analytic-card strong{font-size:26px}.cg-analytic-card span{font-size:10px;min-height:30px}}
