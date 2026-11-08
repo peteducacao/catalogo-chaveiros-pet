@@ -34,6 +34,27 @@ const [p,c]=await Promise.all([
 ]);
 assert.equal(p.status,200,'Produtos protegidos devem ser acessíveis');
 assert.equal(c.status,200,'Configurações protegidas devem ser acessíveis');
+const analytics=await fetch(base+'/api/admin/analytics?days=7',options);
+assert.equal(analytics.status,200,'Estatísticas devem exigir e aceitar sessão administrativa');
+const metrics=await analytics.json();
+assert.ok(metrics.ok&&Array.isArray(metrics.daily)&&Array.isArray(metrics.actions));
+const preflight=await fetch(base+'/api/analytics/event',{
+  method:'OPTIONS',headers:{
+    Origin:'https://peteducacao.github.io',
+    'Access-Control-Request-Method':'POST',
+    'Access-Control-Request-Headers':'Content-Type'
+  }
+});
+assert.equal(preflight.status,204,'O catálogo do GitHub deve poder enviar cliques');
+assert.equal(preflight.headers.get('access-control-allow-origin'),'https://peteducacao.github.io');
+const notAuthorizedStats=await fetch(base+'/api/admin/analytics?days=7');
+assert.equal(notAuthorizedStats.status,401,'Estatísticas são privadas');
+const tracker=await fetch(base+'/assets/catalog-analytics.js');
+assert.equal(tracker.status,200,'Coletor deve existir no site');
+const chart=await fetch(base+'/assets/dashboard-v2.js');
+assert.equal(chart.status,200);
+assert.ok((await chart.text()).includes("id='cg-analytics'"),'Painel deve conter aba Estatísticas');
+
 const productDoc=await p.json();
 const configDoc=await c.json();
 const products=JSON.parse(Buffer.from(productDoc.content,'base64').toString('utf8'));
