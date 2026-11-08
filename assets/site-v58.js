@@ -124,6 +124,7 @@ function makeProductCard(product){
   // Disponibilidade da aba é exclusivamente a do PRODUTO, nunca de cada combinação.
   const available=productAvailable(product);
   const card=node('article','product-card'+(available?'':' sold-out'));
+  card.dataset.productId=String(product.id||''); // Identificador não pessoal para cliques agregados.
   const visual=node('div','product-image'),image=node('img');
   const originalPhoto=safeImageUrl(product.imagem);
   let currentPhoto=originalPhoto;
