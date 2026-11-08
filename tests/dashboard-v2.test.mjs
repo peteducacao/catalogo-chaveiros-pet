@@ -36,6 +36,7 @@ test('Reorganiza sem perder IDs nem formulários',()=>{
   assert.ok(document.querySelector('.cg-overview-grid'));
   assert.equal(document.querySelectorAll('.cg-nav-button').length,5);
   assert.ok(document.getElementById('cg-overview')?.hidden===false);
+  assert.equal(document.getElementById('product-description'),null,'Formulário não deve pedir descrição dos chaveiros');
   assert.equal(document.getElementById('section-products').hidden,true);
   dom.window.close();
 });
