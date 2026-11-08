@@ -310,3 +310,71 @@ body[data-page="painel"].cg-dashboard-ready .editor-modal .collection-picker-row
     grid-template-columns:1fr!important;
   }
 }
+
+
+/* v5 — correção da CAUSA: .modal-body era flex-column e encolhia .stock-box
+   para menos da altura de seus controles; os filhos transbordavam sobre
+   "Legenda da imagem". Usar fluxo normal dentro da área rolável elimina isso. */
+body[data-page="painel"] .editor-modal .modal-body {
+  display:block!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  min-height:0!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > * {
+  flex:none!important;
+  flex-shrink:0!important;
+  margin:0 0 17px!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > .stock-box {
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:max-content!important;
+  align-items:start!important;
+  align-content:start!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:max-content!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding:16px!important;
+  gap:14px 16px!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > .stock-box > .field {
+  min-width:0!important;
+  min-height:max-content!important;
+  height:auto!important;
+  max-height:none!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > .stock-box > .toggle-field {
+  grid-column:1/-1!important;
+  position:relative!important;
+  align-self:start!important;
+  justify-self:start!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > .illustrative-field {
+  display:block!important;
+  position:static!important;
+  width:100%!important;
+  min-height:max-content!important;
+  height:auto!important;
+  overflow:visible!important;
+  clear:both!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > .illustrative-field #caption-field {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:8px!important;
+}
+body[data-page="painel"] .editor-modal .modal-body > .illustrative-field #caption-field > * {
+  position:static!important;
+  flex:none!important;
+}
+@media(max-width:650px) {
+  body[data-page="painel"] .editor-modal .modal-body > .stock-box {
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+}
