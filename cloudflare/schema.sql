@@ -40,3 +40,10 @@ CREATE TABLE IF NOT EXISTS analytics_actions (
   PRIMARY KEY (day, kind, product_id)
 );
 CREATE INDEX IF NOT EXISTS idx_catalog_analytics_actions_day ON analytics_actions(day);
+
+
+-- Teto de gravações: limita o impacto de acessos automatizados no plano gratuito.
+CREATE TABLE IF NOT EXISTS analytics_budget (
+  day TEXT PRIMARY KEY,
+  events INTEGER NOT NULL DEFAULT 0
+);
