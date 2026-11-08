@@ -2,7 +2,6 @@
   {
     "id": "foptic",
     "nome": "FOPTIC",
-    "descricao": "Modelo demonstrativo FOPTIC.",
     "imagem": "assets/produtos/1000305097-8dd92041-c083-4cbd-bc7e-e3f122229fa0.webp",
     "cores": [
       {
@@ -32,7 +31,6 @@
   {
     "id": "chaveiro-1792354717559",
     "nome": "GEES",
-    "descricao": "Chaveiro do grupo de estudos GEES",
     "imagem": "assets/produtos/1000305092-7787246b-6803-427f-8d2a-384e944b21b5.webp",
     "cores": [
       {
@@ -62,7 +60,6 @@
     "id": "chaveiro-1792469245602",
     "ordem": 3,
     "nome": "Monster",
-    "descricao": "",
     "imagem": "assets/produtos/1000305098-29aa6a48-d7a0-4a7e-8c4c-a0b57d9b77dd.webp",
     "cores": [],
     "mostrarCores": true,
@@ -113,7 +110,6 @@
     "id": "chaveiro-1792488763977",
     "ordem": 4,
     "nome": "Fé",
-    "descricao": "",
     "imagem": "assets/produtos/1000305105-a7b37c59-d7ad-4996-997f-f3fd1cafb5a2.webp",
     "cores": [],
     "mostrarCores": true,
@@ -130,7 +126,6 @@
     "id": "chaveiro-1792468399151",
     "ordem": 5,
     "nome": "Pedagogia",
-    "descricao": "",
     "imagem": "assets/produtos/1000306853-ecfa5796-abf9-441b-bedb-5c2b4412140e.webp",
     "cores": [],
     "mostrarCores": true,
@@ -161,7 +156,6 @@
     "id": "chaveiro-1792491034098",
     "ordem": 6,
     "nome": "HarryPotter - Tipo 1",
-    "descricao": "",
     "imagem": "assets/produtos/1000305258-e43bd5fb-b1bf-4be9-9bd1-08352b7249c7.webp",
     "cores": [
       {
@@ -186,7 +180,6 @@
     "id": "chaveiro-1792491054834",
     "ordem": 7,
     "nome": "HarryPotter - Tipo 2",
-    "descricao": "",
     "imagem": "assets/produtos/1000305259-fed0c9e4-5a11-4f05-9a53-57828ef6aca7.webp",
     "cores": [],
     "mostrarCores": true,
@@ -206,7 +199,6 @@
     "id": "chaveiro-1792491084871",
     "ordem": 8,
     "nome": "HarryPotter - Tipo 3",
-    "descricao": "",
     "imagem": "assets/produtos/1000306857-324e0ac4-ea72-4563-af32-9a98d09ae3b9.webp",
     "cores": [
       {
@@ -231,7 +223,6 @@
     "id": "chaveiro-1792491115003",
     "ordem": 9,
     "nome": "HarryPotter - Tipo 4",
-    "descricao": "",
     "imagem": "assets/produtos/1000306856-3ae17a70-06f5-48a3-bbf2-3dab8f5d8192.webp",
     "cores": [
       {
@@ -269,7 +260,6 @@
     "id": "chaveiro-1792663837977",
     "ordem": 10,
     "nome": "Nossa Senhora Aparecida",
-    "descricao": "",
     "imagem": "assets/produtos/1000307323-606d04e9-48b3-4842-833e-85f264e3ff5a.webp",
     "cores": [
       {
