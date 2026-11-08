@@ -10,6 +10,8 @@ for(const name of await readdir(root)){
   if(name.endsWith('.html'))await cp(join(root,name),join(out,name));
 }
 await cp(join(root,'assets'),join(out,'assets'),{recursive:true});
+// A página antiga redireciona para o novo painel; a cópia completa mora aqui.
+await cp(join(root,'cloudflare','painel-source.html'),join(out,'painel.html'));
 const oldLoad = "async function loadData(file){const response=await fetch(file+'?v=31&at='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('Arquivo indisponível: '+file);return response.json();}";
 const newLoad = "async function loadData(file){const url=file==='data/chaveiros.json'?'/api/data/chaveiros.json':file==='data/config.json'?'/api/data/config.json':null;if(!url)throw Error('Arquivo de dados não autorizado');const response=await fetch(url,{cache:'no-store',credentials:'same-origin'});if(!response.ok)throw Error('Dados do catálogo indisponíveis.');return response.json();}";
 for(const name of ['site-v31.js','site-v58.js','home-v53.js']){
