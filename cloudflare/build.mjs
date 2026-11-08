@@ -22,6 +22,8 @@ for(const name of ['site-v31.js','site-v58.js','home-v53.js']){
   await writeFile(path,original.replace(loaderLine,newLoad));
 }
 await cp(join(root,'cloudflare','admin-cloudflare.js'),join(out,'assets','admin-v58.js'));
+await cp(join(root,'cloudflare','dashboard-v2.js'),join(out,'assets','dashboard-v2.js'));
+await cp(join(root,'cloudflare','dashboard-v2.css'),join(out,'assets','dashboard-v2.css'));
 const panelFile=join(out,'painel.html');
 let panel=await readFile(panelFile,'utf8');
 panel=panel.replace('>Admin</label><input type="password" id="token-input"', '>Senha administrativa</label><input type="password" id="token-input"');
@@ -53,6 +55,12 @@ panel=panel.replaceAll('aguarde a confirmação do GitHub','aguarde a confirmaç
   .replaceAll('As alterações são publicadas no GitHub','As alterações são salvas no catálogo')
   .replaceAll('histórico do GitHub poderá','catálogo poderá')
   .replaceAll('>Ver confirmação no GitHub ↗','>Ver confirmação de gravação');
+// Acrescenta o novo painel somente à versão Cloudflare, após o JS funcional existente.
+if(!panel.includes('assets/admin-v58.js'))throw Error('Script administrativo original ausente.');
+panel=panel.replace('</head>','<link rel="stylesheet" href="assets/dashboard-v2.css?v=20261108-v2"></head>');
+panel=panel.replace(/(<script\s+src="assets\/admin-v58\.js[^"]*"\s+defer><\/script>)/,
+  '$1<script src="assets/dashboard-v2.js?v=20261108-v2" defer></script>');
+if(!panel.includes('dashboard-v2.js'))throw Error('Novo painel não foi incluído na versão de publicação.');
 await writeFile(panelFile,panel);
 for(const name of ['index.html','catalogo.html','contato.html']){
   const file=join(out,name);
