@@ -112,7 +112,6 @@ function makeProductCard(product){
     title.append(node('span','product-name-text',product.nome||'Chaveiro'));
   }else title.textContent=product.nome||'Chaveiro';
   content.append(title);
-  if(product.descricao)content.append(node('p','product-description',product.descricao));
   const variationMode=catalogVariantMode(product);
   if(variationMode==='nenhuma'&&available&&product.mostrarCores!==false&&product.cores?.length){
     content.append(node('span','colors-label','Cores disponíveis'));
@@ -356,7 +355,7 @@ function normalizeCatalogSearch(value){
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().replace(/\s+/g,' ');
 }
 function catalogSearchableText(product){
-  const names=[product.nome,product.descricao];
+  const names=[product.nome];
   const mode=catalogVariantMode(product);
   if(mode!=='nenhuma'){
     for(const variant of product.variacoes){
