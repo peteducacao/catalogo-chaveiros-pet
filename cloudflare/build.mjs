@@ -17,8 +17,9 @@ const newLoad = "async function loadData(file){const url=file==='data/chaveiros.
 for(const name of ['site-v31.js','site-v58.js','home-v53.js']){
   const path=join(out,'assets',name);
   const original=await readFile(path,'utf8');
-  if(original.split(oldLoad).length!==2)throw Error('Não foi possível adaptar a consulta: '+name);
-  await writeFile(path,original.replace(oldLoad,newLoad));
+  const loader=original.match(/^async function loadData\\(file\\)\\{.*\\}$/m);
+  if(!loader)throw Error('Não foi possível adaptar a consulta: '+name);
+  await writeFile(path,original.replace(loader[0],newLoad));
 }
 await cp(join(root,'cloudflare','admin-cloudflare.js'),join(out,'assets','admin-v58.js'));
 const panelFile=join(out,'painel.html');
