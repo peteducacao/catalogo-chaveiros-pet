@@ -11,14 +11,14 @@ function setup() {
     runScripts:'outside-only',pretendToBeVisual:true
   });
   dom.window.scrollTo=()=>{};
+  dom.window.fetch=async()=>({ok:true,json:async()=>({daily:[],actions:[],views:0,visitorDays:0,clicks:0,today:'2026-11-08'})});
   const document=dom.window.document;
   // Simula os controladores existentes sem alterar o painel original.
   for(const [name,selector] of [
     ['products','#tab-products'],
-    ['home','#tab-home'],
     ['contacts','#tab-contacts']]){
     document.querySelector(selector).addEventListener('click',()=>{
-      for(const key of ['products','home','contacts']) document.querySelector('#section-'+key).hidden=key!==name;
+      for(const key of ['products','contacts']) document.querySelector('#section-'+key).hidden=key!==name;
     });
   }
   dom.window.eval(app);
@@ -28,9 +28,9 @@ function setup() {
 test('Reorganiza sem perder IDs nem formulários',()=>{
   const {dom,document}=setup();
   assert.ok(document.getElementById('cg-workspace'));
-  for(const id of ['admin-products','admin-search','btn-add','tab-products','tab-home','tab-contacts',
+  for(const id of ['admin-products','admin-search','btn-add','tab-products','tab-contacts',
     'manage-colors-open','manage-collections-open','editor-modal','editor-form',
-    'product-quantity','product-price','save-product','section-home','section-contacts']){
+    'product-quantity','product-price','save-product','section-contacts']){
     assert.equal(document.querySelectorAll('#'+id).length,1,'ID original não pode sumir ou duplicar: '+id);
   }
   assert.ok(document.querySelector('.cg-sidebar'));
@@ -47,8 +47,8 @@ test('Menu e abas do desktop e celular preservam as áreas existentes',()=>{
   press('products');
   assert.equal(document.getElementById('section-products').hidden,false);
   assert.equal(document.getElementById('cg-overview').hidden,true);
-  press('home');
-  assert.equal(document.getElementById('section-home').hidden,false);
+  press('analytics');
+  assert.equal(document.getElementById('cg-analytics').hidden,false);
   press('contacts');
   assert.equal(document.getElementById('section-contacts').hidden,false);
   press('colors');
@@ -92,7 +92,9 @@ test('Indicadores exibem os números existentes, sem histórico ou estatísticas
   assert.equal(document.getElementById('cg-stock-total').textContent,'14');
   assert.equal(document.getElementById('cg-health-ratio').textContent,'80%');
   assert.match(document.getElementById('cg-health-note').textContent,/2 modelos sem estoque/);
-  assert.ok(!document.querySelector('.cg-nav-button[data-cg-view="statistics"]'));
+  assert.ok(document.querySelector('.cg-nav-button[data-cg-view="analytics"]'));
+  assert.ok(!document.querySelector('.cg-nav-button[data-cg-view="home"]'));
+  assert.equal(document.getElementById('tab-home'),null);
   assert.ok(!document.querySelector('.cg-notifications'));
   dom.window.close();
 });
