@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import worker from '../cloudflare/catalog-worker.js';
 
 test('Estatísticas: acesso por dia, navegador único e cliques com consentimento',async()=>{
-  const days=new Map(),visitors=new Map(),actions=new Map(),sessions=new Map();
+  const days=new Map(),visitors=new Map(),actions=new Map(),sessions=new Map(),budgets=new Map();
   const key=(day,hash)=>day+'|'+hash;
   const env={
     CATALOG_ADMIN_PASSWORD:'senha-local-ficticia-para-teste',
@@ -25,7 +25,12 @@ test('Estatísticas: acesso por dia, navegador único e cliques com consentiment
           let changed=0;
           if(sql.startsWith('INSERT INTO admin_sessions')){sessions.set(args[0],args[1]);changed=1;}
           else if(sql.startsWith('DELETE FROM login_attempts'))changed=1;
-          else if(sql.startsWith('INSERT OR IGNORE INTO analytics_visitors')){
+          else if(sql.startsWith('INSERT OR IGNORE INTO analytics_budget')){
+            if(!budgets.has(args[0])){budgets.set(args[0],0);changed=1;}
+          }else if(sql.startsWith('UPDATE analytics_budget')){
+            const used=budgets.get(args[0]);
+            if(Number.isInteger(used)&&used<6000){budgets.set(args[0],used+1);changed=1;}
+          }else if(sql.startsWith('INSERT OR IGNORE INTO analytics_visitors')){
             const k=key(args[0],args[1]);
             if(!visitors.has(k)){visitors.set(k,{day:args[0],visitor_hash:args[1],views:0,actions:0});changed=1;}
           }else if(sql.startsWith('UPDATE analytics_visitors')){
@@ -101,6 +106,7 @@ test('Estatísticas: acesso por dia, navegador único e cliques com consentiment
   assert.equal(data.views,3);
   assert.equal(data.visitorDays,2);
   assert.equal(data.clicks,3);
+  assert.equal([...budgets.values()][0],6,'O teto diário deve contar somente eventos válidos');
   assert.equal(data.daily.length,1);
   const productClicks=data.actions.filter(row=>row.product_id==='chaveiro-pet').reduce((n,x)=>n+x.total,0);
   assert.equal(productClicks,2);
