@@ -147,9 +147,15 @@ async function usePublic(width,height){
 }
 try{
   await useAdmin(1366,900);
+  await useAdmin(1024,768);
+  await useAdmin(768,1024);
   await useAdmin(390,844);
+  await useAdmin(360,760);
   await usePublic(1366,900);
+  await usePublic(1024,768);
+  await usePublic(768,1024);
   await usePublic(390,844);
+  await usePublic(360,760);
   console.log('AUDITORIA VISUAL: '+checks+' verificações em Chrome real, sem modificar os dados.');
 }catch(error){
   errors++;
