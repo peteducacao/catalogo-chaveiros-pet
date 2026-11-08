@@ -11,7 +11,6 @@
     stats: dashboard.querySelector('.dashboard-top'),
     tabs: dashboard.querySelector('.dashboard-control-bar'),
     products: $('section-products'),
-    home: $('section-home'),
     contacts: $('section-contacts')
   };
   if (Object.values(nodes).some(n => !n)) return;
@@ -37,7 +36,7 @@
     ['products','Chaveiros','box','Cadastre, encontre e organize seus modelos.'],
     ['colors','Cores','palette','Sua paleta de cores em um só lugar.'],
     ['collections','Coleções','layers','Organize os modelos em coleções.'],
-    ['home','Página inicial','edit','Edite a apresentação do catálogo.'],
+    ['analytics','Estatísticas','boxes','Acompanhe acessos e interesse nos chaveiros.'],
     ['contacts','Contatos e links','link','Atualize as redes sociais e os contatos.']
   ];
   const root = document.createElement('div');
@@ -106,6 +105,103 @@
   overviewGrid.append(quick,status);
   overview.append(nodes.stats,overviewGrid);
 
+  // Relatórios reais do D1. Não armazenam IP ou nome de visitante.
+  const analytics=document.createElement('section');
+  analytics.id='cg-analytics';
+  analytics.className='cg-analytics';
+  analytics.hidden=true;
+  analytics.innerHTML=
+    '<div class="cg-analytics-controls"><div><h2>Visitas e interesse</h2><p>Contagem anônima com autorização dos visitantes.</p></div>'+
+    '<div class="cg-analytics-filter"><label for="cg-analytics-days">Período</label><select id="cg-analytics-days"><option value="7">7 dias</option><option value="30" selected>30 dias</option><option value="90">90 dias</option></select>'+
+    '<button type="button" id="cg-analytics-reload" aria-label="Atualizar estatísticas">↻ Atualizar</button></div></div>'+
+    '<p id="cg-analytics-message" class="cg-analytics-message" role="status" aria-live="polite"></p>'+
+    '<div class="cg-analytics-summary">'+
+    '<div class="cg-analytic-card"><span>Acessos no período</span><strong id="cg-analytics-views">—</strong></div>'+
+    '<div class="cg-analytic-card"><span>Visitantes por dia*</span><strong id="cg-analytics-visitors">—</strong></div>'+
+    '<div class="cg-analytic-card"><span>Cliques registrados</span><strong id="cg-analytics-clicks">—</strong></div>'+
+    '<div class="cg-analytic-card"><span>Acessos hoje</span><strong id="cg-analytics-today">—</strong></div></div>'+
+    '<div class="cg-analytics-grid"><section class="cg-panel"><h3>Acessos por dia</h3><div id="cg-analytics-chart" class="cg-analytics-chart"></div></section>'+
+    '<section class="cg-panel"><h3>Chaveiros mais explorados</h3><ol id="cg-analytics-ranking" class="cg-analytics-ranking"></ol></section></div>'+
+    '<section class="cg-panel cg-analytics-actions"><h3>O que foi clicado</h3><div id="cg-analytics-actions"></div></section>'+
+    '<p class="cg-analytics-disclaimer">*Visitantes estimados por navegador que permitiu estatísticas; o mesmo navegador em dois dias conta duas vezes. Não armazenamos IPs. Visitas anteriores à ativação não são recuperadas.</p>';
+  let analyticsRequest=0;
+  const formatNumber=value=>new Intl.NumberFormat('pt-BR').format(Number(value)||0);
+  function showAnalyticsData(data,products){
+    const dayRows=Array.isArray(data.daily)?data.daily:[];
+    const actions=Array.isArray(data.actions)?data.actions:[];
+    const today=dayRows.find(item=>item.day===data.today);
+    $('cg-analytics-views').textContent=formatNumber(data.views);
+    $('cg-analytics-visitors').textContent=formatNumber(data.visitorDays);
+    $('cg-analytics-clicks').textContent=formatNumber(data.clicks);
+    $('cg-analytics-today').textContent=formatNumber(today?.views||0);
+    const chart=$('cg-analytics-chart');
+    chart.replaceChildren();
+    const displayed=dayRows.slice(-14);
+    const maximum=Math.max(1,...displayed.map(item=>Number(item.views)||0));
+    if(!displayed.length){
+      const empty=document.createElement('p');empty.className='cg-analytics-empty';
+      empty.textContent='Nenhum acesso registrado neste período.';
+      chart.append(empty);
+    }else{
+      for(const row of displayed){
+        const item=document.createElement('div');
+        item.className='cg-analytics-bar-row';
+        const day=document.createElement('span');day.textContent=String(row.day||'').slice(5).split('-').reverse().join('/');
+        const bar=document.createElement('div');bar.className='cg-analytics-bar-bg';
+        const filled=document.createElement('span');filled.style.width=Math.max(2,100*(Number(row.views)||0)/maximum)+'%';bar.append(filled);
+        const count=document.createElement('strong');count.textContent=formatNumber(row.views);
+        item.append(day,bar,count);chart.append(item);
+      }
+    }
+    const productNames=new Map((Array.isArray(products)?products:[]).map(item=>[String(item.id||''),String(item.nome||'Chaveiro')]));
+    const ranks=new Map();
+    const totals=new Map();
+    for(const row of actions){
+      const kind=String(row.kind||''),amount=Number(row.total)||0,productId=String(row.product_id||'');
+      totals.set(kind,(totals.get(kind)||0)+amount);
+      if(productId)ranks.set(productId,(ranks.get(productId)||0)+amount);
+    }
+    const list=$('cg-analytics-ranking');list.replaceChildren();
+    const top=[...ranks].sort((a,b)=>b[1]-a[1]).slice(0,7);
+    if(!top.length){
+      const item=document.createElement('li');item.textContent='Ainda não há cliques em chaveiros.';item.className='cg-analytics-empty';list.append(item);
+    }else{
+      for(const [id,amount] of top){
+        const item=document.createElement('li');
+        const name=document.createElement('span');name.textContent=productNames.get(id)||id;
+        const count=document.createElement('strong');count.textContent=formatNumber(amount);
+        item.append(name,count);list.append(item);
+      }
+    }
+    const actionsTarget=$('cg-analytics-actions');actionsTarget.replaceChildren();
+    for(const [kind,label] of [['zoom','Fotos ampliadas'],['cor','Cores escolhidas'],['copiar','Detalhes copiados'],['instagram','Acessos ao Instagram']]){
+      const item=document.createElement('div');item.className='cg-analytics-action-row';
+      const text=document.createElement('span');text.textContent=label;
+      const count=document.createElement('strong');count.textContent=formatNumber(totals.get(kind)||0);
+      item.append(text,count);actionsTarget.append(item);
+    }
+    $('cg-analytics-message').textContent='Atualizado com dados do Catálogo PET. Os números dependem do consentimento dos visitantes.';
+  }
+  async function loadAnalytics(){
+    const requestId=++analyticsRequest;
+    const days=$('cg-analytics-days').value;
+    $('cg-analytics-message').textContent='Consultando estatísticas...';
+    try{
+      const response=await fetch('/api/admin/analytics?days='+encodeURIComponent(days),{credentials:'same-origin',cache:'no-store'});
+      if(!response.ok)throw Error(response.status===401?'Sessão expirada. Entre novamente.':'Não foi possível consultar o banco.');
+      const data=await response.json();
+      const productsResponse=await fetch('/api/data/chaveiros.json',{cache:'no-store'});
+      const products=productsResponse.ok?await productsResponse.json():[];
+      if(requestId!==analyticsRequest)return;
+      showAnalyticsData(data,products);
+    }catch(error){
+      if(requestId!==analyticsRequest)return;
+      $('cg-analytics-message').textContent=error.message||'Não foi possível carregar as estatísticas.';
+    }
+  }
+  $('cg-analytics-days').addEventListener('change',loadAnalytics);
+  $('cg-analytics-reload').addEventListener('click',loadAnalytics);
+
   const tools=document.createElement('section');
   tools.id='cg-tools';
   tools.className='cg-tools';
@@ -113,7 +209,7 @@
   tools.innerHTML='<div class="cg-panel cg-tool-card"><span class="cg-tool-symbol" id="cg-tool-icon"></span><h2 id="cg-tool-title">Organização</h2><p id="cg-tool-description"></p><button type="button" id="cg-tool-open" class="btn btn-primary"></button></div>';
 
   // Preserve each original ID and event handler. Only move these existing elements.
-  main.append(top,nodes.feedback,overview,tools,nodes.tabs,nodes.products,nodes.home,nodes.contacts);
+  main.append(top,nodes.feedback,overview,tools,analytics,nodes.tabs,nodes.products,nodes.contacts);
   root.append(aside,main);
   dashboard.append(root);
   document.body.append(mobileShade);
@@ -144,13 +240,13 @@
     if(!selected)return;
     activeView=view;
     // Existing controller remains responsible for legacy tabs and their save logic.
-    if(view==='home')$('tab-home')?.click();
-    else if(view==='contacts')$('tab-contacts')?.click();
+    if(view==='contacts')$('tab-contacts')?.click();
     else $('tab-products')?.click();
     overview.hidden=view!=='overview';
     tools.hidden=view!=='colors'&&view!=='collections';
     nodes.products.hidden=view!=='products';
-    nodes.home.hidden=view!=='home';
+    analytics.hidden=view!=='analytics';
+    if(view==='analytics')loadAnalytics();
     nodes.contacts.hidden=view!=='contacts';
     $('cg-view-title').textContent=selected[1];
     $('cg-view-description').textContent=selected[3];
