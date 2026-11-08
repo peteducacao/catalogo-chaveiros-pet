@@ -36,7 +36,7 @@ jobs:
           test -n "$CATALOG_GITHUB_TOKEN" || (echo "Secret do GitHub para fotos ausente" && exit 1)
           test -n "$CATALOG_ADMIN_PASSWORD" || (echo "Senha administrativa ausente" && exit 1)
       - name: Instalar Wrangler
-        run: npm install --no-save wrangler@4 jsdom@26
+        run: npm install --no-save wrangler@4 jsdom@26 playwright-core@1.55.0
       - name: Validar código do servidor e teste de autenticação
         run: |
           node --check cloudflare/catalog-worker.js
@@ -83,3 +83,8 @@ jobs:
           CATALOG_WORKER_URL: ${{ vars.CATALOG_WORKER_URL || 'https://catalogo-chaveiros-pet.pet-educacao.workers.dev' }}
           CATALOG_ADMIN_PASSWORD: ${{ secrets.CATALOG_ADMIN_PASSWORD }}
         run: node cloudflare/live-smoke.mjs
+      - name: Testar layout e interações reais no Chrome — PC e celular
+        env:
+          CATALOG_WORKER_URL: ${{ vars.CATALOG_WORKER_URL || 'https://catalogo-chaveiros-pet.pet-educacao.workers.dev' }}
+          CATALOG_ADMIN_PASSWORD: ${{ secrets.CATALOG_ADMIN_PASSWORD }}
+        run: node cloudflare/browser-audit.mjs
