@@ -1,0 +1,90 @@
+name: Publicar Catálogo PET (Cloudflare independente)
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cloudflare/**"
+      - "tests/cloudflare-api.test.mjs"
+      - "assets/**"
+      - "*.html"
+      - "data/**"
+      - ".github/workflows/catalogo-cloudflare.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: catalogo-pet-cloudflare
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CATALOG_CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CATALOG_CLOUDFLARE_ACCOUNT_ID || '23d809e1e820e30b3f95c24ea771f579' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Conferir os três segredos sem revelar seus valores
+        env:
+          CATALOG_GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN }}
+          CATALOG_ADMIN_PASSWORD: ${{ secrets.CATALOG_ADMIN_PASSWORD }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || (echo "Secret da Cloudflare ausente" && exit 1)
+          test -n "$CATALOG_GITHUB_TOKEN" || (echo "Secret do GitHub para fotos ausente" && exit 1)
+          test -n "$CATALOG_ADMIN_PASSWORD" || (echo "Senha administrativa ausente" && exit 1)
+      - name: Instalar Wrangler
+        run: npm install --no-save wrangler@4
+      - name: Validar código do servidor e teste de autenticação
+        run: |
+          node --check cloudflare/catalog-worker.js
+          node --check cloudflare/admin-cloudflare.js
+          node --check cloudflare/build.mjs
+          node --check cloudflare/configure-db.mjs
+          node --test tests/cloudflare-api.test.mjs
+      - name: Montar cópia do site para Cloudflare e guardar seed de migração
+        run: node cloudflare/build.mjs
+      - name: Validar scripts da cópia publicada
+        run: |
+          node --check dist/assets/admin-v58.js
+          node --check dist/assets/site-v58.js
+          node --check dist/assets/site-v31.js
+          node --check dist/assets/home-v53.js
+          test -f dist/index.html
+          test -f dist/catalogo.html
+          test -f dist/painel.html
+          test ! -e dist/data/chaveiros.json
+      - name: Identificar ou criar D1 exclusivo do Catálogo PET
+        run: node cloudflare/configure-db.mjs
+      - name: Preparar tabelas do catálogo
+        run: npx wrangler d1 execute DB --config wrangler.catalogo.jsonc --remote --file=cloudflare/schema.sql --yes
+      - name: Migrar dados iniciais sem sobrescrever edições
+        run: npx wrangler d1 execute DB --config wrangler.catalogo.jsonc --remote --file=cloudflare/seed.generated.sql --yes
+      - name: Publicar Worker próprio e arquivos estáticos do catálogo
+        run: npx wrangler deploy --config wrangler.catalogo.jsonc
+      - name: Configurar senha no Worker separado
+        env:
+          CATALOG_ADMIN_PASSWORD: ${{ secrets.CATALOG_ADMIN_PASSWORD }}
+        run: printf '%s' "$CATALOG_ADMIN_PASSWORD" | npx wrangler secret put CATALOG_ADMIN_PASSWORD --config wrangler.catalogo.jsonc
+      - name: Configurar envio de fotografias ao GitHub
+        env:
+          CATALOG_GITHUB_TOKEN: ${{ secrets.CATALOG_GITHUB_TOKEN }}
+        run: printf '%s' "$CATALOG_GITHUB_TOKEN" | npx wrangler secret put CATALOG_GITHUB_TOKEN --config wrangler.catalogo.jsonc
+      - name: Validar endpoint público sem expor dados administrativos
+        env:
+          CATALOG_WORKER_URL: ${{ vars.CATALOG_WORKER_URL || 'https://catalogo-chaveiros-pet.pet-educacao.workers.dev' }}
+        run: |
+          node --input-type=module <<'NODE'
+          const base=process.env.CATALOG_WORKER_URL;
+          const result=await fetch(base+'/api/health',{headers:{'cache-control':'no-cache'}});
+          if(!result.ok)throw Error('API de catálogo indisponível: HTTP '+result.status);
+          const data=await result.json();
+          if(data.service!=='Catálogo PET'||data.documents!==2||!data.ok)
+            throw Error('Banco inicial do catálogo não foi confirmado.');
+          const page=await fetch(base+'/painel.html');
+          if(!page.ok)throw Error('Painel não publicado: HTTP '+page.status);
+          const denied=await fetch(base+'/api/admin/doc/products');
+          if(denied.status!==401)throw Error('Rota administrativa sem proteção adequada.');
+          console.log('Catálogo novo publicado e protegido. Inventário PET não foi modificado.');
+          NODE
