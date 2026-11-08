@@ -20,7 +20,7 @@ function safeImageUrl(url){
 }
 function safeHex(hex){return /^#[0-9a-f]{6}$/i.test(String(hex||''))?String(hex):'#ffffff';}
 function productAvailable(p){return Boolean(p.disponivel)&&Number(p.estoque)>0;}
-async function loadData(file){const response=await fetch(file+'?v=31&at='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('Arquivo indisponível: '+file);return response.json();}
+async function loadData(file){const path=file==='data/chaveiros.json'?'/api/data/chaveiros.json':file==='data/config.json'?'/api/data/config.json':null;if(path){try{const live=await fetch('https://catalogo-chaveiros-pet.pet-educacao.workers.dev'+path,{mode:'cors',cache:'no-store'});if(live.ok)return await live.json();}catch(_){/* Se a API falhar, manter o último catálogo publicado no GitHub Pages. */}}const response=await fetch(file+'?v=31&at='+Date.now(),{cache:'no-store'});if(!response.ok)throw Error('Dados do catálogo indisponíveis: '+file);return response.json();}
 function makeColor(c){const item=node('span','color-option');const dot=node('span','dot');dot.style.backgroundColor=safeHex(c.hex);item.append(dot,document.createTextNode(c.nome||'Cor'));return item;}
 
 
