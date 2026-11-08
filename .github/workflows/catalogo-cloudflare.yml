@@ -67,6 +67,8 @@ jobs:
         run: npx wrangler d1 execute DB --config wrangler.catalogo.jsonc --remote --file=cloudflare/schema.sql --yes
       - name: Migrar dados iniciais sem sobrescrever edições
         run: npx wrangler d1 execute DB --config wrangler.catalogo.jsonc --remote --file=cloudflare/seed.generated.sql --yes
+      - name: Remover descrições antigas dos chaveiros do D1 sem tocar em outros dados
+        run: npx wrangler d1 execute DB --config wrangler.catalogo.jsonc --remote --file=cloudflare/remove-product-descriptions.sql --yes
       - name: Publicar Worker próprio e arquivos estáticos do catálogo
         run: npx wrangler deploy --config wrangler.catalogo.jsonc
       - name: Configurar senha no Worker separado
