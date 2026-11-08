@@ -16,3 +16,27 @@ CREATE TABLE IF NOT EXISTS login_attempts (
   created_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_catalog_login_attempts ON login_attempts(ip_hash, created_at);
+
+
+-- Estatísticas agregadas do catálogo. Não guarda IP, nome ou navegador.
+-- O identificador aleatório aceito pelo visitante só vira um hash diferente a cada dia.
+CREATE TABLE IF NOT EXISTS analytics_daily (
+  day TEXT PRIMARY KEY,
+  views INTEGER NOT NULL DEFAULT 0,
+  visitors INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS analytics_visitors (
+  day TEXT NOT NULL,
+  visitor_hash TEXT NOT NULL,
+  views INTEGER NOT NULL DEFAULT 0,
+  actions INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, visitor_hash)
+);
+CREATE TABLE IF NOT EXISTS analytics_actions (
+  day TEXT NOT NULL,
+  kind TEXT NOT NULL,
+  product_id TEXT NOT NULL DEFAULT '',
+  total INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (day, kind, product_id)
+);
+CREATE INDEX IF NOT EXISTS idx_catalog_analytics_actions_day ON analytics_actions(day);
