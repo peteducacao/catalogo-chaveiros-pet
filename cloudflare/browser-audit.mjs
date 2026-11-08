@@ -67,6 +67,8 @@ async function useAdmin(width,height){
     await nav('products');
     await page.locator('#btn-add').click();
     await page.locator('#editor-modal').waitFor({state:'visible'});
+    check(await page.locator('#product-description').count()===0,'O campo de descrição não deve existir no cadastro '+viewportLabel);
+    check(!(await page.locator('#admin-guide-dialog').textContent()).includes('A descrição é opcional'),'Ajuda contém orientação obsoleta de descrição '+viewportLabel);
     // Conferir a estrutura real, não só a presença dos elementos no DOM.
     let rect=await geometry(page);
     check(rect.bodyStyle==='grid','A área do formulário precisa usar grid para impedir sobreposição: '+JSON.stringify(rect));
@@ -116,6 +118,7 @@ async function usePublic(width,height){
     await page.locator('#catalog-grid .product-card').first().waitFor({state:'visible',timeout:25000});
     const cards=await page.locator('#catalog-grid .product-card').count();
     check(cards>=1,'Nenhum chaveiro renderizado no catálogo público');
+    check(await page.locator('.product-card .product-description').count()===0,'Descrição antiga ainda aparece no card '+label);
     const overflow=await page.evaluate(()=>({
       html:document.documentElement.scrollWidth,viewport:window.innerWidth
     }));
