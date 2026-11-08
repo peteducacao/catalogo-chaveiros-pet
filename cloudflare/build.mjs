@@ -57,7 +57,7 @@ panel=panel.replaceAll('aguarde a confirmação do GitHub','aguarde a confirmaç
   .replaceAll('>Ver confirmação no GitHub ↗','>Ver confirmação de gravação');
 // Acrescenta o novo painel somente à versão Cloudflare, após o JS funcional existente.
 if(!panel.includes('assets/admin-v58.js'))throw Error('Script administrativo original ausente.');
-panel=panel.replace('</head>','<link rel="stylesheet" href="assets/dashboard-v2.css?v=20261108-v2"></head>');
+panel=panel.replace('</head>','<link rel="stylesheet" href="assets/dashboard-v2.css?v=20261108-layout-v3"></head>');
 panel=panel.replace(/(<script\s+src="assets\/admin-v58\.js[^"]*"\s+defer><\/script>)/,
   '$1<script src="assets/dashboard-v2.js?v=20261108-v2" defer></script>');
 if(!panel.includes('dashboard-v2.js'))throw Error('Novo painel não foi incluído na versão de publicação.');
