@@ -146,6 +146,13 @@ async function analyticsRecord(request,env){
   const day=analyticsDay();
   // A cada dia um hash diferente: sem IP armazenado, sem vincular sessões entre dias.
   const visitorHash=await hash('catalogo-pet:'+day+':'+client);
+  // Máximo de 6 mil eventos públicos por dia: protege a cota D1 compartilhada
+  // com outros projetos da conta, sem guardar endereço IP.
+  await env.DB.prepare('INSERT OR IGNORE INTO analytics_budget(day,events) VALUES(?,0)').bind(day).run();
+  const budget=await env.DB.prepare(
+    'UPDATE analytics_budget SET events=events+1 WHERE day=? AND events<6000'
+  ).bind(day).run();
+  if(Number(budget.meta?.changes)!==1)return reply({ok:true,limit:true},200,cors);
   const first=await env.DB.prepare(
     'INSERT OR IGNORE INTO analytics_visitors(day,visitor_hash,views,actions) VALUES(?,?,0,0)'
   ).bind(day,visitorHash).run();
