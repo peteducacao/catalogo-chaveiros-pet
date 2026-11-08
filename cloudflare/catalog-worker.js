@@ -80,8 +80,22 @@ async function uploadPhoto(request, env) {
   if (!/^[A-Za-z0-9+/=]+$/.test(encoded) || encoded.length > 7500000) return fail('Imagem inválida ou muito grande.', 413);
   let bytes;
   try { bytes = atob(encoded); } catch { return fail('Fotografia inválida.'); }
-  if (bytes.length > 5600000 || bytes.slice(0, 4) !== 'RIFF' || bytes.slice(8, 12) !== 'WEBP') {
-    return fail('O arquivo precisa ser uma fotografia WebP válida.');
+  // Conferir também tamanho RIFF e tipo do primeiro bloco. Somente verificar
+  // "RIFF...WEBP" permitia gravar arquivos truncados como se fossem fotografias.
+  const chunk = bytes.slice(12, 16);
+  const sizeAt = offset => (
+    (bytes.charCodeAt(offset) | (bytes.charCodeAt(offset + 1) << 8) |
+     (bytes.charCodeAt(offset + 2) << 16) | (bytes.charCodeAt(offset + 3) << 24)) >>> 0
+  );
+  const validChunk = ['VP8 ', 'VP8L', 'VP8X'].includes(chunk);
+  const minChunkSize = chunk === 'VP8L' ? 5 : 10;
+  const validPhoto = bytes.length >= 30 && bytes.length <= 5600000 &&
+    bytes.slice(0, 4) === 'RIFF' && bytes.slice(8, 12) === 'WEBP' &&
+    sizeAt(4) === bytes.length - 8 && validChunk &&
+    sizeAt(16) >= minChunkSize &&
+    20 + sizeAt(16) + (sizeAt(16) % 2) <= bytes.length;
+  if (!validPhoto) {
+    return fail('O arquivo WebP está incompleto ou corrompido.');
   }
   const gh = await fetch('https://api.github.com/repos/' + repo + '/contents/' + path, {
     method: 'PUT',
