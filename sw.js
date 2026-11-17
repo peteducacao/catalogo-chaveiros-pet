@@ -1,5 +1,5 @@
 /* Shell estático do catálogo PET. Produtos e disponibilidade seguem on-line. */
-const CACHE='pet-catalogo-shell-v5';
+const CACHE='pet-catalogo-shell-v6';
 const SHELL=[
   './index.html','./catalogo.html','./contato.html',
   './assets/catalog-v57.css','./assets/catalog-modern-v70.css',
