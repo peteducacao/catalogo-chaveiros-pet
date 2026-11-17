@@ -17,25 +17,25 @@
       "purpose": "any"
     },
     {
-      "src": "./assets/catalogo-192.png",
+      "src": "./assets/catalogo-192-v2.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./assets/catalogo-maskable-192.png",
+      "src": "./assets/catalogo-maskable-192-v2.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "./assets/catalogo-512.png",
+      "src": "./assets/catalogo-512-v2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./assets/catalogo-maskable-512.png",
+      "src": "./assets/catalogo-maskable-512-v2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
