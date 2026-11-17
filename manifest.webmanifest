@@ -1,7 +1,7 @@
 {
   "id": "./catalogo.html",
   "name": "Catálogo de Chaveiros | PET Educação",
-  "short_name": "Catálogo PET",
+  "short_name": "Catálogo de Chaveiros",
   "description": "Conheça os chaveiros produzidos pelo PET Educação — Conexão de Saberes.",
   "lang": "pt-BR",
   "start_url": "./catalogo.html",
@@ -10,6 +10,12 @@
   "background_color": "#fcf8f2",
   "theme_color": "#193d68",
   "icons": [
+    {
+      "src": "./assets/pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
     {
       "src": "./assets/pwa-icon-192.png",
       "sizes": "192x192",
@@ -21,12 +27,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "./assets/pwa-icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
     }
   ]
 }
