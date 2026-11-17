@@ -1,0 +1,72 @@
+/* Instalação PWA: entrada alinhada ao menu público do catálogo. */
+.main-nav .pwa-menu-link{
+  appearance:none;display:inline-block;border:0;background:transparent;
+  color:#526878;font:800 13px "DM Sans",system-ui,sans-serif;
+  line-height:1.45;text-align:left;cursor:pointer;
+  padding:10px 0;border-radius:10px;white-space:nowrap;
+}
+.main-nav .pwa-menu-link:hover,.main-nav .pwa-menu-link:focus-visible{
+  color:#0e7879;
+}
+body[data-page="catalogo"] .main-nav .pwa-menu-link{
+  font-weight:800;padding:10px 15px;
+}
+.main-nav .pwa-menu-link:focus-visible,.pwa-install-dialog button:focus-visible{
+  outline:3px solid #1b8e91;outline-offset:3px;
+}
+@media(max-width:700px){
+  .main-nav .pwa-menu-link,
+  body[data-page="catalogo"] .main-nav .pwa-menu-link{
+    display:block;width:100%;min-height:45px;
+    padding:12px 6px;font-size:inherit;line-height:1.5;
+  }
+}
+.pwa-install-dialog{
+  position:fixed;inset:0;margin:auto;
+  width:min(410px,calc(100vw - 36px));max-width:calc(100vw - 36px);
+  max-height:calc(100dvh - 42px);overflow-y:auto;
+  padding:32px 25px 26px;box-sizing:border-box;
+  border:1px solid #d9e9e4;border-radius:24px;
+  background:#fffdfb;color:#173d64;
+  box-shadow:0 24px 90px rgba(12,35,56,.28);
+  text-align:center;
+}
+.pwa-install-dialog:not([open]){display:none}
+.pwa-install-dialog::backdrop{
+  background:rgba(14,34,52,.56);
+  -webkit-backdrop-filter:blur(9px);
+  backdrop-filter:blur(9px);
+}
+.pwa-install-dialog .pwa-dialog-close{
+  position:absolute;right:13px;top:12px;width:36px;height:36px;
+  border:0;border-radius:50%;background:#edf4f4;color:#26465e;
+  font-size:24px;line-height:36px;cursor:pointer;
+}
+.pwa-install-dialog .pwa-dialog-icon{
+  display:grid;place-items:center;
+  width:76px;height:76px;margin:0 auto 16px;
+  border-radius:20px;background:#193d68;
+  box-shadow:0 8px 24px rgba(25,61,104,.17);
+}
+.pwa-install-dialog .pwa-dialog-icon img{width:72px;height:72px;object-fit:contain}
+.pwa-install-dialog h2{
+  margin:0 0 8px;font:800 clamp(20px,5.5vw,25px)/1.2 Manrope,"DM Sans",system-ui,sans-serif;
+  letter-spacing:-.04em;color:#193d68;
+}
+.pwa-install-dialog .pwa-dialog-description{
+  margin:0 auto 23px;max-width:300px;font:500 14px/1.6 "DM Sans",system-ui,sans-serif;
+  color:#526978;
+}
+.pwa-install-dialog .pwa-install-action{
+  display:block;width:100%;min-height:52px;padding:13px 18px;
+  box-sizing:border-box;border:0;border-radius:13px;
+  background:#193f70;color:#fff;font:800 15px "DM Sans",system-ui,sans-serif;
+  cursor:pointer;box-shadow:0 8px 18px rgba(25,63,112,.15);
+}
+.pwa-install-dialog .pwa-install-action:hover{background:#0f5c8e}
+.pwa-install-dialog .pwa-install-action:disabled{opacity:.65;cursor:default}
+.pwa-install-dialog .pwa-install-guidance{
+  margin:14px auto 0;max-width:310px;
+  color:#536877;font:500 13px/1.55 "DM Sans",system-ui,sans-serif;
+}
+.pwa-install-dialog .pwa-install-guidance[hidden]{display:none}
