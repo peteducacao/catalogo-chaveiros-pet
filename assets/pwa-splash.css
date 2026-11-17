@@ -1,11 +1,13 @@
-/* Tela de entrada do PWA, exibida apenas em modo aplicativo. */
+/* Splash do Catálogo PET: arte vetorial nítida e tipografia real. */
 .pet-splash{position:fixed;inset:0;z-index:2147483000;display:none;overflow:hidden;place-items:center;background:#fcf8f2;color:#092d50;pointer-events:auto;isolation:isolate}
 .pet-splash.is-visible{display:grid}
 .pet-splash::before{content:"";position:absolute;left:-15vw;top:-11vh;width:min(78vw,480px);height:min(35vh,320px);background:#075487;border-radius:0 0 85% 0;transform:rotate(-11deg);z-index:-1}
 .pet-splash::after{content:"";position:absolute;right:-18vw;bottom:-10vh;width:125vw;height:min(27vh,245px);background:linear-gradient(155deg,#02b9a8 15%,#075487 54%,#092d50 78%);border-radius:55% 0 0 0;transform:rotate(-8deg);z-index:-1}
-.pet-splash-content{width:min(86vw,380px);display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-2vh);animation:pet-splash-appear .6s ease both}
-.pet-splash-logo{width:min(74vw,290px);height:auto;display:block;mix-blend-mode:multiply}
-.pet-splash-loader{margin-top:52px;width:45px;height:45px;border:5px solid #d9dedb;border-top-color:#02b9a8;border-right-color:#02b9a8;border-radius:50%;animation:pet-splash-spin .85s linear infinite}
+.pet-splash-content{width:min(90vw,390px);display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-2vh);animation:pet-splash-appear .6s ease both}
+.pet-splash-logo{width:min(53vw,205px);height:auto;display:block;mix-blend-mode:multiply}
+.pet-splash-title{margin:4px 0 0;color:#092d50;font:800 clamp(30px,8vw,39px)/1.12 Manrope,"DM Sans",system-ui,sans-serif;letter-spacing:-.045em}
+.pet-splash-subtitle{margin:4px 0 0;color:#092d50;font:600 clamp(20px,5.4vw,25px)/1.25 "DM Sans",system-ui,sans-serif;letter-spacing:-.025em}
+.pet-splash-loader{margin-top:48px;width:45px;height:45px;border:5px solid #d9dedb;border-top-color:#02b9a8;border-right-color:#02b9a8;border-radius:50%;animation:pet-splash-spin .85s linear infinite}
 .pet-splash-loading{margin-top:16px;font:500 16px/1.4 "DM Sans",system-ui,sans-serif;letter-spacing:.01em}
 .pet-splash.is-leaving{opacity:0;transition:opacity .28s ease;pointer-events:none}
 @keyframes pet-splash-spin{to{transform:rotate(360deg)}}
