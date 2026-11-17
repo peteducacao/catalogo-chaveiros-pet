@@ -11,7 +11,7 @@
   "theme_color": "#193d68",
   "icons": [
     {
-      "src": "./assets/pwa-icon.svg?v=clean-3",
+      "src": "./assets/pwa-icon.svg?v=proportion-4",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
