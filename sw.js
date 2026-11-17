@@ -1,1 +1,42 @@
-const CACHE='pet-catalogo-shell-v1';const SHELL=['./catalogo.html','./contato.html','./assets/catalog-v57.css','./assets/catalog-modern-v70.css','./assets/site-v58.js','./assets/logo-pet.svg','./assets/favicon.svg','./assets/pwa-icon.svg','./manifest.webmanifest'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(async c=>{await Promise.allSettled(SHELL.map(u=>c.add(u)))}));self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('pet-catalogo-')&&k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET'||new URL(r.url).origin!==self.location.origin)return;const u=new URL(r.url);if(u.pathname.includes('painel')||u.pathname.includes('admin')||u.pathname.includes('/api/'))return;if(r.mode==='navigate'){e.respondWith(fetch(r).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(r,copy))}return res}).catch(async()=>await caches.match(r)||await caches.match('./catalogo.html')));return}e.respondWith(caches.match(r).then(cached=>cached||fetch(r).then(res=>{if(res.ok&&['style','script','image','font'].includes(r.destination)){const copy=res.clone();caches.open(CACHE).then(c=>c.put(r,copy))}return res})))})
+/* Shell estático do catálogo PET. Produtos e disponibilidade seguem on-line. */
+const CACHE='pet-catalogo-shell-v2';
+const SHELL=[
+  './index.html','./catalogo.html','./contato.html',
+  './assets/catalog-v57.css','./assets/catalog-modern-v70.css',
+  './assets/contact-v40.css','./assets/site-v58.js','./assets/site-v31.js',
+  './assets/pwa-install.css','./assets/pwa-install.js',
+  './assets/logo-pet.svg','./assets/favicon.svg',
+  './assets/pwa-icon.svg','./assets/pwa-icon-192.png','./assets/pwa-icon-512.png',
+  './manifest.webmanifest'
+];
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(CACHE).then(cache=>Promise.allSettled(SHELL.map(url=>cache.add(url)))));
+  self.skipWaiting();
+});
+self.addEventListener('activate',event=>{
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('pet-catalogo-')&&key!==CACHE).map(key=>caches.delete(key)))));
+  self.clients.claim();
+});
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
+  const pathname=new URL(request.url).pathname;
+  if(/(?:painel|admin)(?:\.html|\/|$)/.test(pathname)||pathname.includes('/api/'))return;
+  if(request.mode==='navigate'){
+    event.respondWith(fetch(request).then(response=>{
+      if(response.ok){
+        const copy=response.clone();
+        caches.open(CACHE).then(cache=>cache.put(request,copy));
+      }
+      return response;
+    }).catch(async()=>await caches.match(request)||await caches.match('./catalogo.html')));
+    return;
+  }
+  event.respondWith(caches.match(request).then(cached=>cached||fetch(request).then(response=>{
+    if(response.ok&&['style','script','image','font'].includes(request.destination)){
+      const copy=response.clone();
+      caches.open(CACHE).then(cache=>cache.put(request,copy));
+    }
+    return response;
+  })));
+});
