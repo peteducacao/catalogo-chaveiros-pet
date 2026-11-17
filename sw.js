@@ -1,10 +1,11 @@
 /* Shell estático do catálogo PET. Produtos e disponibilidade seguem on-line. */
-const CACHE='pet-catalogo-shell-v2';
+const CACHE='pet-catalogo-shell-v3';
 const SHELL=[
   './index.html','./catalogo.html','./contato.html',
   './assets/catalog-v57.css','./assets/catalog-modern-v70.css',
   './assets/contact-v40.css','./assets/site-v58.js','./assets/site-v31.js',
   './assets/pwa-install.css','./assets/pwa-install.js',
+  './assets/pwa-splash.css','./assets/pwa-splash.js',
   './assets/logo-pet.svg','./assets/favicon.svg',
   './assets/pwa-icon.svg','./assets/pwa-icon-192.png','./assets/pwa-icon-512.png',
   './manifest.webmanifest'
