@@ -1,0 +1,46 @@
+name: Renderizar ícones PWA sem pixelização
+on:
+  push:
+    branches: [main]
+    paths:
+      - assets/pwa-icon.svg
+      - .github/workflows/render-pwa-icons.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install cairosvg pillow
+      - name: Renderizar ícone aprovado com texto e versões Android
+        run: |
+          python - <<'PY'
+          import io
+          from pathlib import Path
+          import cairosvg
+          from PIL import Image
+          source=Path('assets/pwa-icon.svg').read_bytes()
+          for size in (180,192,512):
+              png=cairosvg.svg2png(bytestring=source,output_width=size*3,output_height=size*3)
+              image=Image.open(io.BytesIO(png)).convert('RGBA')
+              image=image.resize((size,size),Image.Resampling.LANCZOS)
+              image.save(f'assets/catalogo-{size}-v3.png',optimize=True)
+          # Android maskable: preserva a composição inteira em 80% da área segura
+          for size in (192,512):
+              source_png=Image.open(f'assets/catalogo-{size}-v3.png').convert('RGBA')
+              safe=source_png.resize((round(size*.8),round(size*.8)),Image.Resampling.LANCZOS)
+              canvas=Image.new('RGBA',(size,size),(252,248,242,255))
+              canvas.alpha_composite(safe,((size-safe.width)//2,(size-safe.height)//2))
+              canvas.save(f'assets/catalogo-maskable-{size}-v3.png',optimize=True)
+          PY
+      - name: Publicar arquivos PNG
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/catalogo-180-v3.png assets/catalogo-192-v3.png assets/catalogo-512-v3.png assets/catalogo-maskable-192-v3.png assets/catalogo-maskable-512-v3.png
+          git diff --cached --quiet || (git commit -m "build: gerar PNGs suavizados da identidade aprovada" && git push)
