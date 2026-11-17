@@ -43,4 +43,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add assets/catalogo-180-v3.png assets/catalogo-192-v3.png assets/catalogo-512-v3.png assets/catalogo-maskable-192-v3.png assets/catalogo-maskable-512-v3.png
-          git diff --cached --quiet || (git commit -m "build: gerar PNGs suavizados da identidade aprovada" && git push)
+          git diff --cached --quiet || (git commit -m "build: gerar PNGs suavizados da identidade aprovada" && git pull --rebase origin main && git push origin HEAD:main)
