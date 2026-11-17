@@ -1,5 +1,5 @@
 /* Shell estático do catálogo PET. Produtos e disponibilidade seguem on-line. */
-const CACHE='pet-catalogo-shell-v4';
+const CACHE='pet-catalogo-shell-v5';
 const SHELL=[
   './index.html','./catalogo.html','./contato.html',
   './assets/catalog-v57.css','./assets/catalog-modern-v70.css',
@@ -7,7 +7,7 @@ const SHELL=[
   './assets/pwa-install.css','./assets/pwa-install.js',
   './assets/pwa-splash.css','./assets/pwa-splash.js',
   './assets/logo-pet.svg','./assets/favicon.svg',
-  './assets/pwa-icon.svg','./assets/pwa-icon-192-v2.png','./assets/pwa-icon-512-v2.png',
+  './assets/pwa-icon.svg','./assets/catalogo-180.png','./assets/catalogo-192.png','./assets/catalogo-512.png','./assets/catalogo-maskable-192.png','./assets/catalogo-maskable-512.png',
   './manifest.webmanifest'
 ];
 self.addEventListener('install',event=>{
